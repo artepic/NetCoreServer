@@ -206,7 +206,9 @@ namespace NetCoreServer
         public virtual bool Connect()
         {
             if (IsConnected || IsHandshaked || IsConnecting || IsHandshaking)
+            {
                 return false;
+            }
 
             // Setup buffers
             _receiveBuffer = new Buffer();
@@ -226,7 +228,9 @@ namespace NetCoreServer
 
             // Apply the option: dual mode (this option must be applied before connecting)
             if (Socket.AddressFamily == AddressFamily.InterNetworkV6)
-                Socket.DualMode = OptionDualMode;
+            {
+                this.Socket.DualMode = this.OptionDualMode;
+            }
 
             // Call the client connecting handler
             OnConnecting();
@@ -264,16 +268,30 @@ namespace NetCoreServer
 
             // Apply the option: keep alive
             if (OptionKeepAlive)
-                Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+            {
+                this.Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+            }
+
             if (OptionTcpKeepAliveTime >= 0)
-                Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, OptionTcpKeepAliveTime);
+            {
+                this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, this.OptionTcpKeepAliveTime);
+            }
+
             if (OptionTcpKeepAliveInterval >= 0)
-                Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, OptionTcpKeepAliveInterval);
+            {
+                this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, this.OptionTcpKeepAliveInterval);
+            }
+
             if (OptionTcpKeepAliveRetryCount >= 0)
-                Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, OptionTcpKeepAliveRetryCount);
+            {
+                this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, this.OptionTcpKeepAliveRetryCount);
+            }
+
             // Apply the option: no delay
             if (OptionNoDelay)
-                Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
+            {
+                this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
+            }
 
             // Prepare receive & send buffers
             _receiveBuffer.Reserve(OptionReceiveBufferSize);
@@ -303,11 +321,17 @@ namespace NetCoreServer
 
                 // SSL handshake
                 if (Context.Certificates != null)
-                    _sslStream.AuthenticateAsClient(Address, Context.Certificates, Context.Protocols, true);
+                {
+                    this._sslStream.AuthenticateAsClient(this.Address, this.Context.Certificates, this.Context.Protocols, true);
+                }
                 else if (Context.Certificate != null)
-                    _sslStream.AuthenticateAsClient(Address, new X509CertificateCollection(new[] { Context.Certificate }), Context.Protocols, true);
+                {
+                    this._sslStream.AuthenticateAsClient(this.Address, new X509CertificateCollection(new[] { this.Context.Certificate }), this.Context.Protocols, true);
+                }
                 else
-                    _sslStream.AuthenticateAsClient(Address);
+                {
+                    this._sslStream.AuthenticateAsClient(this.Address);
+                }
             }
             catch (Exception)
             {
@@ -324,7 +348,9 @@ namespace NetCoreServer
 
             // Call the empty send buffer handler
             if (_sendBufferMain.IsEmpty)
-                OnEmpty();
+            {
+                this.OnEmpty();
+            }
 
             return true;
         }
@@ -336,14 +362,20 @@ namespace NetCoreServer
         public virtual bool Disconnect()
         {
             if (!IsConnected && !IsConnecting)
+            {
                 return false;
+            }
 
             // Cancel connecting operation
             if (IsConnecting)
-                Socket.CancelConnectAsync(_connectEventArg);
+            {
+                Socket.CancelConnectAsync(this._connectEventArg);
+            }
 
             if (_disconnecting)
+            {
                 return false;
+            }
 
             // Reset connecting & handshaking flags
             IsConnecting = false;
@@ -421,7 +453,9 @@ namespace NetCoreServer
         public virtual bool Reconnect()
         {
             if (!Disconnect())
+            {
                 return false;
+            }
 
             return Connect();
         }
@@ -433,7 +467,9 @@ namespace NetCoreServer
         public virtual bool ConnectAsync()
         {
             if (IsConnected || IsHandshaked || IsConnecting || IsHandshaking)
+            {
                 return false;
+            }
 
             // Setup buffers
             _receiveBuffer = new Buffer();
@@ -453,7 +489,9 @@ namespace NetCoreServer
 
             // Apply the option: dual mode (this option must be applied before connecting)
             if (Socket.AddressFamily == AddressFamily.InterNetworkV6)
-                Socket.DualMode = OptionDualMode;
+            {
+                this.Socket.DualMode = this.OptionDualMode;
+            }
 
             // Update the connecting flag
             IsConnecting = true;
@@ -463,7 +501,9 @@ namespace NetCoreServer
 
             // Async connect to the server
             if (!Socket.ConnectAsync(_connectEventArg))
-                ProcessConnect(_connectEventArg);
+            {
+                this.ProcessConnect(this._connectEventArg);
+            }
 
             return true;
         }
@@ -481,10 +521,14 @@ namespace NetCoreServer
         public virtual bool ReconnectAsync()
         {
             if (!DisconnectAsync())
+            {
                 return false;
+            }
 
             while (IsConnected)
+            {
                 Thread.Yield();
+            }
 
             return ConnectAsync();
         }
@@ -527,10 +571,14 @@ namespace NetCoreServer
         public virtual long Send(ReadOnlySpan<byte> buffer)
         {
             if (!IsHandshaked)
+            {
                 return 0;
+            }
 
             if (buffer.IsEmpty)
+            {
                 return 0;
+            }
 
             try
             {
@@ -593,10 +641,14 @@ namespace NetCoreServer
         public virtual bool SendAsync(ReadOnlySpan<byte> buffer)
         {
             if (!IsHandshaked)
+            {
                 return false;
+            }
 
             if (buffer.IsEmpty)
+            {
                 return true;
+            }
 
             lock (_sendLock)
             {
@@ -615,9 +667,13 @@ namespace NetCoreServer
 
                 // Avoid multiple send handlers
                 if (_sending)
+                {
                     return true;
+                }
                 else
-                    _sending = true;
+                {
+                    this._sending = true;
+                }
 
                 // Try to send the main buffer
                 TrySend();
@@ -657,10 +713,14 @@ namespace NetCoreServer
         public virtual long Receive(byte[] buffer, long offset, long size)
         {
             if (!IsHandshaked)
+            {
                 return 0;
+            }
 
             if (size == 0)
+            {
                 return 0;
+            }
 
             try
             {
@@ -712,10 +772,14 @@ namespace NetCoreServer
         private void TryReceive()
         {
             if (_receiving)
+            {
                 return;
+            }
 
             if (!IsHandshaked)
+            {
                 return;
+            }
 
             try
             {
@@ -724,7 +788,9 @@ namespace NetCoreServer
                 do
                 {
                     if (!IsHandshaked)
+                    {
                         return;
+                    }
 
                     _receiving = true;
                     result = _sslStream.BeginRead(_receiveBuffer.Data, 0, (int)_receiveBuffer.Capacity, ProcessReceive, _sslStreamId);
@@ -740,7 +806,9 @@ namespace NetCoreServer
         private void TrySend()
         {
             if (!IsHandshaked)
+            {
                 return;
+            }
 
             bool empty = false;
 
@@ -768,7 +836,9 @@ namespace NetCoreServer
                     }
                 }
                 else
+                {
                     return;
+                }
             }
 
             // Call the empty send buffer handler
@@ -814,7 +884,9 @@ namespace NetCoreServer
         private void OnAsyncCompleted(object sender, SocketAsyncEventArgs e)
         {
             if (IsSocketDisposed)
+            {
                 return;
+            }
 
             // Determine which type of operation just completed and call the associated handler
             switch (e.LastOperation)
@@ -839,16 +911,30 @@ namespace NetCoreServer
             {
                 // Apply the option: keep alive
                 if (OptionKeepAlive)
-                    Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+                {
+                    this.Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+                }
+
                 if (OptionTcpKeepAliveTime >= 0)
-                    Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, OptionTcpKeepAliveTime);
+                {
+                    this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, this.OptionTcpKeepAliveTime);
+                }
+
                 if (OptionTcpKeepAliveInterval >= 0)
-                    Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, OptionTcpKeepAliveInterval);
+                {
+                    this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, this.OptionTcpKeepAliveInterval);
+                }
+
                 if (OptionTcpKeepAliveRetryCount >= 0)
-                    Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, OptionTcpKeepAliveRetryCount);
+                {
+                    this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, this.OptionTcpKeepAliveRetryCount);
+                }
+
                 // Apply the option: no delay
                 if (OptionNoDelay)
-                    Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
+                {
+                    this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
+                }
 
                 // Prepare receive & send buffers
                 _receiveBuffer.Reserve(OptionReceiveBufferSize);
@@ -879,11 +965,17 @@ namespace NetCoreServer
                     // Begin the SSL handshake
                     IsHandshaking = true;
                     if (Context.Certificates != null)
-                        _sslStream.BeginAuthenticateAsClient(Address, Context.Certificates, Context.Protocols, true, ProcessHandshake, _sslStreamId);
+                    {
+                        this._sslStream.BeginAuthenticateAsClient(this.Address, this.Context.Certificates, this.Context.Protocols, true, this.ProcessHandshake, this._sslStreamId);
+                    }
                     else if (Context.Certificate != null)
-                        _sslStream.BeginAuthenticateAsClient(Address, new X509CertificateCollection(new[] { Context.Certificate }), Context.Protocols, true, ProcessHandshake, _sslStreamId);
+                    {
+                        this._sslStream.BeginAuthenticateAsClient(this.Address, new X509CertificateCollection(new[] { this.Context.Certificate }), this.Context.Protocols, true, this.ProcessHandshake, this._sslStreamId);
+                    }
                     else
-                        _sslStream.BeginAuthenticateAsClient(Address, ProcessHandshake, _sslStreamId);
+                    {
+                        this._sslStream.BeginAuthenticateAsClient(this.Address, this.ProcessHandshake, this._sslStreamId);
+                    }
                 }
                 catch (Exception)
                 {
@@ -909,12 +1001,16 @@ namespace NetCoreServer
                 IsHandshaking = false;
 
                 if (IsHandshaked)
+                {
                     return;
+                }
 
                 // Validate SSL stream Id
                 var sslStreamId = result.AsyncState as Guid?;
                 if (_sslStreamId != sslStreamId)
+                {
                     return;
+                }
 
                 // End the SSL handshake
                 _sslStream.EndAuthenticateAsClient(result);
@@ -927,14 +1023,18 @@ namespace NetCoreServer
 
                 // Check the socket disposed state: in some rare cases it might be disconnected while receiving!
                 if (IsSocketDisposed)
+                {
                     return;
+                }
 
                 // Call the session handshaked handler
                 OnHandshaked();
 
                 // Call the empty send buffer handler
                 if (_sendBufferMain.IsEmpty)
-                    OnEmpty();
+                {
+                    this.OnEmpty();
+                }
             }
             catch (Exception)
             {
@@ -951,12 +1051,16 @@ namespace NetCoreServer
             try
             {
                 if (!IsHandshaked)
+                {
                     return;
+                }
 
                 // Validate SSL stream Id
                 var sslStreamId = result.AsyncState as Guid?;
                 if (_sslStreamId != sslStreamId)
+                {
                     return;
+                }
 
                 // End the SSL read
                 long size = _sslStream.EndRead(result);
@@ -991,10 +1095,14 @@ namespace NetCoreServer
                 if (size > 0)
                 {
                     if (!result.CompletedSynchronously)
-                        TryReceive();
+                    {
+                        this.TryReceive();
+                    }
                 }
                 else
-                    DisconnectAsync();
+                {
+                    this.DisconnectAsync();
+                }
             }
             catch (Exception)
             {
@@ -1011,12 +1119,16 @@ namespace NetCoreServer
             try
             {
                 if (!IsHandshaked)
+                {
                     return;
+                }
 
                 // Validate SSL stream Id
                 var sslStreamId = result.AsyncState as Guid?;
                 if (_sslStreamId != sslStreamId)
+                {
                     return;
+                }
 
                 // End the SSL write
                 _sslStream.EndWrite(result);
@@ -1136,7 +1248,9 @@ namespace NetCoreServer
                 (error == SocketError.ConnectionReset) ||
                 (error == SocketError.OperationAborted) ||
                 (error == SocketError.Shutdown))
+            {
                 return;
+            }
 
             OnError(error);
         }

@@ -15,7 +15,9 @@ namespace WsChatClient
             _stop = true;
             CloseAsync(1000);
             while (IsConnected)
+            {
                 Thread.Yield();
+            }
         }
 
         public override void OnWsConnecting(HttpRequest request)
@@ -57,7 +59,9 @@ namespace WsChatClient
 
             // Try to connect again
             if (!_stop)
-                ConnectAsync();
+            {
+                this.ConnectAsync();
+            }
         }
 
         protected override void OnError(SocketError error)
@@ -75,12 +79,16 @@ namespace WsChatClient
             // WebSocket server address
             string address = "127.0.0.1";
             if (args.Length > 0)
+            {
                 address = args[0];
+            }
 
             // WebSocket server port
             int port = 8080;
             if (args.Length > 1)
+            {
                 port = int.Parse(args[1]);
+            }
 
             Console.WriteLine($"WebSocket server address: {address}");
             Console.WriteLine($"WebSocket server port: {port}");
@@ -102,7 +110,9 @@ namespace WsChatClient
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Disconnect the client
                 if (line == "!")

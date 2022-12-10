@@ -49,30 +49,40 @@ namespace tests
             var server = new EchoUdpServer(IPAddress.Any, port);
             Assert.True(server.Start());
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Create and connect Echo client
             var client = new EchoUdpClient(address, port);
             Assert.True(client.Connect());
             while (!client.IsConnected)
+            {
                 Thread.Yield();
+            }
 
             // Send a message to the Echo server
             client.Send("test");
 
             // Wait for all data processed...
             while (client.BytesReceived != 4)
+            {
                 Thread.Yield();
+            }
 
             // Disconnect the Echo client
             Assert.True(client.Disconnect());
             while (client.IsConnected)
+            {
                 Thread.Yield();
+            }
 
             // Stop the Echo server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Check the Echo server state
             Assert.True(server.Started);
@@ -99,7 +109,9 @@ namespace tests
             var server = new EchoUdpServer(IPAddress.Any, port);
             Assert.True(server.Start());
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Test duration in seconds
             int duration = 10;
@@ -122,7 +134,9 @@ namespace tests
                         clients.Add(client);
                         client.Connect();
                         while (!client.IsConnected)
+                        {
                             Thread.Yield();
+                        }
                     }
                 }
                 // Connect/Disconnect the random client
@@ -136,13 +150,17 @@ namespace tests
                         {
                             client.Disconnect();
                             while (client.IsConnected)
+                            {
                                 Thread.Yield();
+                            }
                         }
                         else
                         {
                             client.Connect();
                             while (!client.IsConnected)
+                            {
                                 Thread.Yield();
+                            }
                         }
                     }
                 }
@@ -157,7 +175,9 @@ namespace tests
                         {
                             client.Reconnect();
                             while (!client.IsConnected)
+                            {
                                 Thread.Yield();
+                            }
                         }
                     }
                 }
@@ -169,7 +189,9 @@ namespace tests
                         int index = rand.Next() % clients.Count;
                         var client = clients[index];
                         if (client.IsConnected)
+                        {
                             client.Send("test");
+                        }
                     }
                 }
 
@@ -182,13 +204,17 @@ namespace tests
             {
                 client.Disconnect();
                 while (client.IsConnected)
+                {
                     Thread.Yield();
+                }
             }
 
             // Stop the Echo server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Check the Echo server state
             Assert.True(server.Started);

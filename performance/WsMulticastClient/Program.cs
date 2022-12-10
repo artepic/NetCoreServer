@@ -108,11 +108,19 @@ namespace WsMulticastClient
             // Connect clients
             Console.Write("Clients connecting...");
             foreach (var client in multicastClients)
+            {
                 client.ConnectAsync();
+            }
+
             Console.WriteLine("Done!");
             foreach (var client in multicastClients)
+            {
                 while (!client.IsConnected)
+                {
                     Thread.Yield();
+                }
+            }
+
             Console.WriteLine("All clients connected!");
 
             // Wait for benchmarking
@@ -123,11 +131,19 @@ namespace WsMulticastClient
             // Disconnect clients
             Console.Write("Clients disconnecting...");
             foreach (var client in multicastClients)
+            {
                 client.CloseAsync(100);
+            }
+
             Console.WriteLine("Done!");
             foreach (var client in multicastClients)
+            {
                 while (client.IsConnected)
+                {
                     Thread.Yield();
+                }
+            }
+
             Console.WriteLine("All clients disconnected!");
 
             TimestampStop = DateTime.UtcNow;

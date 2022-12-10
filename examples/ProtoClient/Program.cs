@@ -164,7 +164,9 @@ namespace ProtoClient
         public bool StartWatchdog()
         {
             if (_watchdog)
+            {
                 return false;
+            }
 
             Console.WriteLine("Watchdog thread starting...");
 
@@ -180,7 +182,9 @@ namespace ProtoClient
         public bool StopWatchdog()
         {
             if (!_watchdog)
+            {
                 return false;
+            }
 
             Console.WriteLine("Watchdog thread stopping...");
 
@@ -197,7 +201,9 @@ namespace ProtoClient
         {
             var instance = obj as SimpleProtoClient;
             if (instance == null)
+            {
                 return;
+            }
 
             try
             {
@@ -314,12 +320,16 @@ namespace ProtoClient
             // Simple protocol server address
             string address = "127.0.0.1";
             if (args.Length > 0)
+            {
                 address = args[0];
+            }
 
             // Simple protocol server port
             int port = 4444;
             if (args.Length > 1)
+            {
                 port = int.Parse(args[1]);
+            }
 
             Console.WriteLine($"Simple protocol server address: {address}");
             Console.WriteLine($"Simple protocol server port: {port}");
@@ -343,7 +353,9 @@ namespace ProtoClient
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Disconnect the client
                 if (line == "!")

@@ -84,15 +84,22 @@ namespace UdpMulticastServer
                 {
                     var start = DateTime.UtcNow;
                     for (int i = 0; i < messagesRate; i++)
+                    {
                         server.Multicast(message);
+                    }
+
                     var end = DateTime.UtcNow;
 
                     // Sleep for remaining time or yield
                     var milliseconds = (int)(end - start).TotalMilliseconds;
                     if (milliseconds < 1000)
+                    {
                         Thread.Sleep(1000 - milliseconds);
+                    }
                     else
+                    {
                         Thread.Yield();
+                    }
                 }
             });
 
@@ -103,7 +110,9 @@ namespace UdpMulticastServer
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Restart the server
                 if (line == "!")

@@ -146,7 +146,9 @@ namespace NetCoreServer
             if (Response.IsPendingHeader())
             {
                 if (Response.ReceiveHeader(buffer, (int)offset, (int)size))
-                    OnReceivedResponseHeader(Response);
+                {
+                    this.OnReceivedResponseHeader(this.Response);
+                }
 
                 size = 0;
             }
@@ -300,7 +302,9 @@ namespace NetCoreServer
 
             // Create a new timeout timer
             if (_timer == null)
-                _timer = new Timer(TimeoutHandler, null, Timeout.Infinite, Timeout.Infinite);
+            {
+                this._timer = new Timer(TimeoutHandler, null, Timeout.Infinite, Timeout.Infinite);
+            }
 
             // Start the timeout timer
             _timer.Change((int)timeout.Value.TotalMilliseconds, Timeout.Infinite);
@@ -368,8 +372,12 @@ namespace NetCoreServer
         {
             // Send prepared HTTP request on connect
             if (!Request.IsEmpty && !Request.IsErrorSet)
-                if (!SendRequestAsync())
-                    SetPromiseError("Failed to send HTTP request!");
+            {
+                if (!this.SendRequestAsync())
+                {
+                    this.SetPromiseError("Failed to send HTTP request!");
+                }
+            }
         }
 
         protected override void OnDisconnected()

@@ -48,14 +48,18 @@ namespace tests
             var server = new MulticastUdpServer(IPAddress.Any, 0);
             Assert.True(server.Start(multicastAddress, multicastPort));
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Create and connect multicast client
             var client1 = new MulticastUdpClient(listenAddress, multicastPort);
             client1.SetupMulticast(true);
             Assert.True(client1.Connect());
             while (!client1.IsConnected)
+            {
                 Thread.Yield();
+            }
 
             // Join multicast group
             client1.JoinMulticastGroup(multicastAddress);
@@ -66,14 +70,18 @@ namespace tests
 
             // Wait for all data processed...
             while (client1.BytesReceived != 4)
+            {
                 Thread.Yield();
+            }
 
             // Create and connect multicast client
             var client2 = new MulticastUdpClient(listenAddress, multicastPort);
             client2.SetupMulticast(true);
             Assert.True(client2.Connect());
             while (!client2.IsConnected)
+            {
                 Thread.Yield();
+            }
 
             // Join multicast group
             client2.JoinMulticastGroup(multicastAddress);
@@ -84,14 +92,18 @@ namespace tests
 
             // Wait for all data processed...
             while ((client1.BytesReceived != 8) || (client2.BytesReceived != 4))
+            {
                 Thread.Yield();
+            }
 
             // Create and connect multicast client
             var client3 = new MulticastUdpClient(listenAddress, multicastPort);
             client3.SetupMulticast(true);
             Assert.True(client3.Connect());
             while (!client3.IsConnected)
+            {
                 Thread.Yield();
+            }
 
             // Join multicast group
             client3.JoinMulticastGroup(multicastAddress);
@@ -102,7 +114,9 @@ namespace tests
 
             // Wait for all data processed...
             while ((client1.BytesReceived != 12) || (client2.BytesReceived != 8) || (client3.BytesReceived != 4))
+            {
                 Thread.Yield();
+            }
 
             // Leave multicast group
             client1.LeaveMulticastGroup(multicastAddress);
@@ -111,14 +125,18 @@ namespace tests
             // Disconnect the multicast client
             Assert.True(client1.Disconnect());
             while (client1.IsConnected)
+            {
                 Thread.Yield();
+            }
 
             // Multicast some data to all clients
             server.Multicast("test");
 
             // Wait for all data processed...
             while ((client1.BytesReceived != 12) || (client2.BytesReceived != 12) || (client3.BytesReceived != 8))
+            {
                 Thread.Yield();
+            }
 
             // Leave multicast group
             client2.LeaveMulticastGroup(multicastAddress);
@@ -127,14 +145,18 @@ namespace tests
             // Disconnect the multicast client
             Assert.True(client2.Disconnect());
             while (client2.IsConnected)
+            {
                 Thread.Yield();
+            }
 
             // Multicast some data to all clients
             server.Multicast("test");
 
             // Wait for all data processed...
             while ((client1.BytesReceived != 12) || (client2.BytesReceived != 12) || (client3.BytesReceived != 12))
+            {
                 Thread.Yield();
+            }
 
             // Leave multicast group
             client3.LeaveMulticastGroup(multicastAddress);
@@ -143,12 +165,16 @@ namespace tests
             // Disconnect the multicast client
             Assert.True(client3.Disconnect());
             while (client3.IsConnected)
+            {
                 Thread.Yield();
+            }
 
             // Stop the Echo server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Check the multicast server state
             Assert.True(server.Started);
@@ -180,7 +206,9 @@ namespace tests
             var server = new MulticastUdpServer(IPAddress.Any, 0);
             Assert.True(server.Start(multicastAddress, multicastPort));
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Test duration in seconds
             int duration = 10;
@@ -204,7 +232,9 @@ namespace tests
                         client.SetupMulticast(true);
                         client.Connect();
                         while (!client.IsConnected)
+                        {
                             Thread.Yield();
+                        }
 
                         // Join multicast group
                         client.JoinMulticastGroup(multicastAddress);
@@ -226,13 +256,17 @@ namespace tests
 
                             client.Disconnect();
                             while (client.IsConnected)
+                            {
                                 Thread.Yield();
+                            }
                         }
                         else
                         {
                             client.Connect();
                             while (!client.IsConnected)
+                            {
                                 Thread.Yield();
+                            }
 
                             // Join multicast group
                             client.JoinMulticastGroup(multicastAddress);
@@ -255,13 +289,17 @@ namespace tests
             {
                 client.Disconnect();
                 while (client.IsConnected)
+                {
                     Thread.Yield();
+                }
             }
 
             // Stop the multicast server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Check the multicast server state
             Assert.True(server.Started);

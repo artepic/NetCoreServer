@@ -61,7 +61,9 @@ namespace NetCoreServer
         {
             Debug.Assert((i < _headers.Count), "Index out of bounds!");
             if (i >= _headers.Count)
+            {
                 return ("", "");
+            }
 
             return _headers[i];
         }
@@ -76,7 +78,9 @@ namespace NetCoreServer
         {
             Debug.Assert((i < _cookies.Count), "Index out of bounds!");
             if (i >= _cookies.Count)
+            {
                 return ("", "");
+            }
 
             return _cookies[i];
         }
@@ -363,7 +367,10 @@ namespace NetCoreServer
             Clear();
             SetBegin("POST", url);
             if (!string.IsNullOrEmpty(contentType))
-                SetHeader("Content-Type", contentType);
+            {
+                this.SetHeader("Content-Type", contentType);
+            }
+
             SetBody(content);
             return this;
         }
@@ -387,7 +394,10 @@ namespace NetCoreServer
             Clear();
             SetBegin("POST", url);
             if (!string.IsNullOrEmpty(contentType))
-                SetHeader("Content-Type", contentType);
+            {
+                this.SetHeader("Content-Type", contentType);
+            }
+
             SetBody(content);
             return this;
         }
@@ -411,7 +421,10 @@ namespace NetCoreServer
             Clear();
             SetBegin("PUT", url);
             if (!string.IsNullOrEmpty(contentType))
-                SetHeader("Content-Type", contentType);
+            {
+                this.SetHeader("Content-Type", contentType);
+            }
+
             SetBody(content);
             return this;
         }
@@ -435,7 +448,10 @@ namespace NetCoreServer
             Clear();
             SetBegin("PUT", url);
             if (!string.IsNullOrEmpty(contentType))
-                SetHeader("Content-Type", contentType);
+            {
+                this.SetHeader("Content-Type", contentType);
+            }
+
             SetBody(content);
             return this;
         }
@@ -516,7 +532,9 @@ namespace NetCoreServer
             {
                 // Check for the request cache out of bounds
                 if ((i + 3) >= (int)_cache.Size)
+                {
                     break;
+                }
 
                 // Check for the header separator
                 if ((_cache[i + 0] == '\r') && (_cache[i + 1] == '\n') && (_cache[i + 2] == '\r') && (_cache[i + 3] == '\n'))
@@ -534,11 +552,16 @@ namespace NetCoreServer
                         methodSize++;
                         index++;
                         if (index >= (int)_cache.Size)
+                        {
                             return false;
+                        }
                     }
                     index++;
                     if (index >= (int)_cache.Size)
+                    {
                         return false;
+                    }
+
                     _method = _cache.ExtractString(methodIndex, methodSize);
 
                     // Parse URL
@@ -549,11 +572,16 @@ namespace NetCoreServer
                         urlSize++;
                         index++;
                         if (index >= (int)_cache.Size)
+                        {
                             return false;
+                        }
                     }
                     index++;
                     if (index >= (int)_cache.Size)
+                    {
                         return false;
+                    }
+
                     _url = _cache.ExtractString(urlIndex, urlSize);
 
                     // Parse protocol version
@@ -564,14 +592,22 @@ namespace NetCoreServer
                         protocolSize++;
                         index++;
                         if (index >= (int)_cache.Size)
+                        {
                             return false;
+                        }
                     }
                     index++;
                     if ((index >= (int)_cache.Size) || (_cache[index] != '\n'))
+                    {
                         return false;
+                    }
+
                     index++;
                     if (index >= (int)_cache.Size)
+                    {
                         return false;
+                    }
+
                     _protocol = _cache.ExtractString(protocolIndex, protocolSize);
 
                     // Parse headers
@@ -585,24 +621,39 @@ namespace NetCoreServer
                             headerNameSize++;
                             index++;
                             if (index >= i)
+                            {
                                 break;
+                            }
+
                             if (index >= (int)_cache.Size)
+                            {
                                 return false;
+                            }
                         }
                         index++;
                         if (index >= i)
+                        {
                             break;
+                        }
+
                         if (index >= (int)_cache.Size)
+                        {
                             return false;
+                        }
 
                         // Skip all prefix space characters
                         while (char.IsWhiteSpace((char)_cache[index]))
                         {
                             index++;
                             if (index >= i)
+                            {
                                 break;
+                            }
+
                             if (index >= (int)_cache.Size)
+                            {
                                 return false;
+                            }
                         }
 
                         // Parse header value
@@ -613,20 +664,32 @@ namespace NetCoreServer
                             headerValueSize++;
                             index++;
                             if (index >= i)
+                            {
                                 break;
+                            }
+
                             if (index >= (int)_cache.Size)
+                            {
                                 return false;
+                            }
                         }
                         index++;
                         if ((index >= (int)_cache.Size) || (_cache[index] != '\n'))
+                        {
                             return false;
+                        }
+
                         index++;
                         if (index >= (int)_cache.Size)
+                        {
                             return false;
+                        }
 
                         // Validate header name and value (sometimes value can be empty)
                         if (headerNameSize == 0)
+                        {
                             return false;
+                        }
 
                         // Add a new header
                         string headerName = _cache.ExtractString(headerNameIndex, headerNameSize);
@@ -640,7 +703,10 @@ namespace NetCoreServer
                             for (int j = headerValueIndex; j < (headerValueIndex + headerValueSize); j++)
                             {
                                 if ((_cache[j] < '0') || (_cache[j] > '9'))
+                                {
                                     return false;
+                                }
+
                                 _bodyLength *= 10;
                                 _bodyLength += _cache[j] - '0';
                                 _bodyLengthProvided = true;

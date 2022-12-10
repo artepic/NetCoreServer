@@ -49,7 +49,9 @@ namespace NetCoreServer
         public bool PerformClientUpgrade(HttpResponse response, Guid id)
         {
             if (response.Status != 101)
+            {
                 return false;
+            }
 
             bool error = false;
             bool accept = false;
@@ -114,7 +116,10 @@ namespace NetCoreServer
             if (!accept || !connection || !upgrade)
             {
                 if (!error)
-                    _wsHandler.OnWsError("Invalid WebSocket response");
+                {
+                    this._wsHandler.OnWsError("Invalid WebSocket response");
+                }
+
                 return false;
             }
 
@@ -135,7 +140,9 @@ namespace NetCoreServer
         public bool PerformServerUpgrade(HttpRequest request, HttpResponse response)
         {
             if (request.Method != "GET")
+            {
                 return false;
+            }
 
             bool error = false;
             bool connection = false;
@@ -210,13 +217,18 @@ namespace NetCoreServer
 
             // Filter out non WebSocket handshake requests
             if (!connection && !upgrade && !wsKey && !wsVersion)
+            {
                 return false;
+            }
 
             // Failed to perform WebSocket handshake
             if (!connection || !upgrade || !wsKey || !wsVersion)
             {
                 if (!error)
+                {
                     response.MakeErrorResponse(400, "Invalid WebSocket response");
+                }
+
                 _wsHandler.SendUpgrade(response);
                 return false;
             }
@@ -231,7 +243,9 @@ namespace NetCoreServer
 
             // Validate WebSocket upgrade request and response
             if (!_wsHandler.OnWsConnecting(request, response))
+            {
                 return false;
+            }
 
             // Send WebSocket upgrade response
             _wsHandler.SendUpgrade(response);
@@ -264,7 +278,9 @@ namespace NetCoreServer
 
             // Append WebSocket frame size
             if (size <= 125)
-                WsSendBuffer.Append((byte)(((int)size & 0xFF) | (mask ? 0x80 : 0)));
+            {
+                this.WsSendBuffer.Append((byte)(((int)size & 0xFF) | (mask ? 0x80 : 0)));
+            }
             else if (size <= 65535)
             {
                 WsSendBuffer.Append((byte)(126 | (mask ? 0x80 : 0)));
@@ -275,7 +291,9 @@ namespace NetCoreServer
             {
                 WsSendBuffer.Append((byte)(127 | (mask ? 0x80 : 0)));
                 for (int i = 7; i >= 0; i--)
-                    WsSendBuffer.Append((byte)((size >> (8 * i)) & 0xFF));
+                {
+                    this.WsSendBuffer.Append((byte)((size >> (8 * i)) & 0xFF));
+                }
             }
 
             if (mask)
@@ -303,7 +321,9 @@ namespace NetCoreServer
 
             // Mask WebSocket frame content
             for (int i = index; i < size; i++)
-                WsSendBuffer.Data[offset + i] = (byte)(buffer[i] ^ WsSendMask[i % 4]);
+            {
+                this.WsSendBuffer.Data[offset + i] = (byte)(buffer[i] ^ this.WsSendMask[i % 4]);
+            }
         }
 
         /// <summary>
@@ -356,7 +376,10 @@ namespace NetCoreServer
                         for (long i = 0; i < 2; i++, index++, size--)
                         {
                             if (size == 0)
+                            {
                                 return;
+                            }
+
                             WsReceiveFrameBuffer.Append(buffer[offset + index]);
                         }
                     }
@@ -382,7 +405,10 @@ namespace NetCoreServer
                             for (long i = 0; i < 2; i++, index++, size--)
                             {
                                 if (size == 0)
+                                {
                                     return;
+                                }
+
                                 WsReceiveFrameBuffer.Append(buffer[offset + index]);
                             }
                         }
@@ -398,7 +424,10 @@ namespace NetCoreServer
                             for (long i = 0; i < 8; i++, index++, size--)
                             {
                                 if (size == 0)
+                                {
                                     return;
+                                }
+
                                 WsReceiveFrameBuffer.Append(buffer[offset + index]);
                             }
                         }
@@ -416,7 +445,10 @@ namespace NetCoreServer
                             for (long i = 0; i < 4; i++, index++, size--)
                             {
                                 if (size == 0)
+                                {
                                     return;
+                                }
+
                                 WsReceiveFrameBuffer.Append(buffer[offset + index]);
                                 WsReceiveMask[i] = buffer[offset + index];
                             }
@@ -438,10 +470,14 @@ namespace NetCoreServer
                         if (mask)
                         {
                             for (long i = 0; i < WsPayloadSize; i++)
-                                WsReceiveFinalBuffer.Append((byte)(WsReceiveFrameBuffer[WsHeaderSize + i] ^ WsReceiveMask[i % 4]));
+                            {
+                                this.WsReceiveFinalBuffer.Append((byte)(this.WsReceiveFrameBuffer[this.WsHeaderSize + i] ^ this.WsReceiveMask[i % 4]));
+                            }
                         }
                         else
-                            WsReceiveFinalBuffer.Append(WsReceiveFrameBuffer.AsSpan().Slice((int)WsHeaderSize, (int)WsPayloadSize));
+                        {
+                            this.WsReceiveFinalBuffer.Append(this.WsReceiveFrameBuffer.AsSpan().Slice((int)this.WsHeaderSize, (int)this.WsPayloadSize));
+                        }
 
                         WsFrameReceived = true;
 
@@ -502,24 +538,35 @@ namespace NetCoreServer
             lock (WsReceiveLock)
             {
                 if (WsFrameReceived)
+                {
                     return 0;
+                }
 
                 // Required WebSocket frame opcode and mask flag
                 if (WsReceiveFrameBuffer.Size < 2)
-                    return 2 - WsReceiveFrameBuffer.Size;
+                {
+                    return 2 - this.WsReceiveFrameBuffer.Size;
+                }
 
                 bool mask = ((WsReceiveFrameBuffer[1] >> 7) & 0x01) != 0;
                 long payload = WsReceiveFrameBuffer[1] & (~0x80);
 
                 // Required WebSocket frame size
                 if ((payload == 126) && (WsReceiveFrameBuffer.Size < 4))
-                    return 4 - WsReceiveFrameBuffer.Size;
+                {
+                    return 4 - this.WsReceiveFrameBuffer.Size;
+                }
+
                 if ((payload == 127) && (WsReceiveFrameBuffer.Size < 10))
-                    return 10 - WsReceiveFrameBuffer.Size;
+                {
+                    return 10 - this.WsReceiveFrameBuffer.Size;
+                }
 
                 // Required WebSocket frame mask
                 if ((mask) && (WsReceiveFrameBuffer.Size < WsHeaderSize))
-                    return WsHeaderSize - WsReceiveFrameBuffer.Size;
+                {
+                    return this.WsHeaderSize - this.WsReceiveFrameBuffer.Size;
+                }
 
                 // Required WebSocket frame payload
                 return WsHeaderSize + WsPayloadSize - WsReceiveFrameBuffer.Size;
@@ -554,7 +601,9 @@ namespace NetCoreServer
             finally
             {
                 if (acquiredReceiveLock)
-                    Monitor.Exit(WsReceiveLock);
+                {
+                    Monitor.Exit(this.WsReceiveLock);
+                }
             }
 
             // Clear the send buffer

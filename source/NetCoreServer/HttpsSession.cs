@@ -133,7 +133,9 @@ namespace NetCoreServer
             if (Request.IsPendingHeader())
             {
                 if (Request.ReceiveHeader(buffer, (int)offset, (int)size))
-                    OnReceivedRequestHeader(Request);
+                {
+                    this.OnReceivedRequestHeader(this.Request);
+                }
 
                 size = 0;
             }

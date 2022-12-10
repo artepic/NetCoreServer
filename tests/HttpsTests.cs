@@ -17,7 +17,9 @@ namespace tests
         {
             // Process HTTP request methods
             if (request.Method == "HEAD")
-                SendResponseAsync(Response.MakeHeadResponse());
+            {
+                this.SendResponseAsync(this.Response.MakeHeadResponse());
+            }
             else if (request.Method == "GET")
             {
                 string key = request.Url;
@@ -39,7 +41,9 @@ namespace tests
                     SendResponseAsync(Response.MakeGetResponse(value));
                 }
                 else
-                    SendResponseAsync(Response.MakeErrorResponse(404, "Required cache value was not found for the key: " + key));
+                {
+                    this.SendResponseAsync(this.Response.MakeErrorResponse(404, "Required cache value was not found for the key: " + key));
+                }
             }
             else if ((request.Method == "POST") || (request.Method == "PUT"))
             {
@@ -73,14 +77,22 @@ namespace tests
                     SendResponseAsync(Response.MakeGetResponse(value));
                 }
                 else
-                    SendResponseAsync(Response.MakeErrorResponse(404, "Deleted cache value was not found for the key: " + key));
+                {
+                    this.SendResponseAsync(this.Response.MakeErrorResponse(404, "Deleted cache value was not found for the key: " + key));
+                }
             }
             else if (request.Method == "OPTIONS")
-                SendResponseAsync(Response.MakeOptionsResponse());
+            {
+                this.SendResponseAsync(this.Response.MakeOptionsResponse());
+            }
             else if (request.Method == "TRACE")
-                SendResponseAsync(Response.MakeTraceResponse(request));
+            {
+                this.SendResponseAsync(this.Response.MakeTraceResponse(request));
+            }
             else
-                SendResponseAsync(Response.MakeErrorResponse("Unsupported HTTP method: " + request.Method));
+            {
+                this.SendResponseAsync(this.Response.MakeErrorResponse("Unsupported HTTP method: " + request.Method));
+            }
         }
 
         protected override void OnReceivedRequestError(HttpRequest request, string error)
@@ -122,7 +134,9 @@ namespace tests
             var server = new HttpsCacheServer(server_context, IPAddress.Any, port);
             Assert.True(server.Start());
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Create a new HTTPS client
             var client = new HttpsClientEx(client_context, address, port);
@@ -148,7 +162,9 @@ namespace tests
             // Stop the HTTPS server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
         }
     }
 }

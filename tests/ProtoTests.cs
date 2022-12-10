@@ -271,13 +271,17 @@ namespace tests
             var server = new ProtoServer(IPAddress.Any, port);
             Assert.True(server.Start());
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Create and connect protocol client
             var client = new ProtoClient(address, port);
             Assert.True(client.ConnectAsync());
             while (!client.IsConnected || (server.Clients != 1))
+            {
                 Thread.Yield();
+            }
 
             // Send a request to the protocol server
             SimpleRequest request = SimpleRequest.Default;
@@ -290,12 +294,16 @@ namespace tests
             // Disconnect the protocol client
             Assert.True(client.DisconnectAsync());
             while (client.IsConnected || (server.Clients != 0))
+            {
                 Thread.Yield();
+            }
 
             // Stop the protocol server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Check the protocol server state
             Assert.True(server.Started);
@@ -324,13 +332,17 @@ namespace tests
             var server = new ProtoServer(IPAddress.Any, port);
             Assert.True(server.Start());
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Create and connect protocol client
             var client1 = new ProtoClient(address, port);
             Assert.True(client1.ConnectAsync());
             while (!client1.IsConnected || (server.Clients != 1))
+            {
                 Thread.Yield();
+            }
 
             // Create a server notification
             SimpleNotify notify = SimpleNotify.Default;
@@ -341,53 +353,71 @@ namespace tests
 
             // Wait for all data processed...
             while (client1.TcpClient.BytesReceived == 0)
+            {
                 Thread.Yield();
+            }
 
             // Create and connect protocol client
             var client2 = new ProtoClient(address, port);
             Assert.True(client2.ConnectAsync());
             while (!client2.IsConnected || (server.Clients != 2))
+            {
                 Thread.Yield();
+            }
 
             // Multicast the notification to all clients
             server.Sender.Send(notify);
 
             // Wait for all data processed...
             while (client2.TcpClient.BytesReceived == 0)
+            {
                 Thread.Yield();
+            }
 
             // Create and connect protocol client
             var client3 = new ProtoClient(address, port);
             Assert.True(client3.ConnectAsync());
             while (!client3.IsConnected || (server.Clients != 3))
+            {
                 Thread.Yield();
+            }
 
             // Multicast the notification to all clients
             server.Sender.Send(notify);
 
             // Wait for all data processed...
             while (client3.TcpClient.BytesReceived == 0)
+            {
                 Thread.Yield();
+            }
 
             // Disconnect the protocol client
             Assert.True(client1.DisconnectAsync());
             while (client1.IsConnected || (server.Clients != 2))
+            {
                 Thread.Yield();
+            }
 
             // Disconnect the protocol client
             Assert.True(client2.DisconnectAsync());
             while (client2.IsConnected || (server.Clients != 1))
+            {
                 Thread.Yield();
+            }
 
             // Disconnect the protocol client
             Assert.True(client3.DisconnectAsync());
             while (client3.IsConnected || (server.Clients != 0))
+            {
                 Thread.Yield();
+            }
 
             // Stop the protocol server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Check the protocol server state
             Assert.True(server.Started);
@@ -420,7 +450,9 @@ namespace tests
             var server = new ProtoServer(IPAddress.Any, port);
             Assert.True(server.Start());
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Test duration in seconds
             int duration = 10;
@@ -448,7 +480,9 @@ namespace tests
                         clients.Add(client);
                         client.ConnectAsync();
                         while (!client.IsConnected)
+                        {
                             Thread.Yield();
+                        }
                     }
                 }
                 // Connect/Disconnect the random client
@@ -462,13 +496,17 @@ namespace tests
                         {
                             client.DisconnectAsync();
                             while (client.IsConnected)
+                            {
                                 Thread.Yield();
+                            }
                         }
                         else
                         {
                             client.ConnectAsync();
                             while (!client.IsConnected)
+                            {
                                 Thread.Yield();
+                            }
                         }
                     }
                 }
@@ -483,7 +521,9 @@ namespace tests
                         {
                             client.ReconnectAsync();
                             while (!client.IsConnected)
+                            {
                                 Thread.Yield();
+                            }
                         }
                     }
                 }
@@ -519,13 +559,17 @@ namespace tests
             {
                 client.DisconnectAsync();
                 while (client.IsConnected)
+                {
                     Thread.Yield();
+                }
             }
 
             // Stop the protocol server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Check the protocol server state
             Assert.True(server.Started);

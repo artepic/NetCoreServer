@@ -17,7 +17,9 @@ namespace SslChatClient
             _stop = true;
             DisconnectAsync();
             while (IsConnected)
+            {
                 Thread.Yield();
+            }
         }
 
         protected override void OnConnected()
@@ -39,7 +41,9 @@ namespace SslChatClient
 
             // Try to connect again
             if (!_stop)
-                ConnectAsync();
+            {
+                this.ConnectAsync();
+            }
         }
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
@@ -62,12 +66,16 @@ namespace SslChatClient
             // SSL server address
             string address = "127.0.0.1";
             if (args.Length > 0)
+            {
                 address = args[0];
+            }
 
             // SSL server port
             int port = 2222;
             if (args.Length > 1)
+            {
                 port = int.Parse(args[1]);
+            }
 
             Console.WriteLine($"SSL server address: {address}");
             Console.WriteLine($"SSL server port: {port}");
@@ -92,7 +100,9 @@ namespace SslChatClient
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Disconnect the client
                 if (line == "!")

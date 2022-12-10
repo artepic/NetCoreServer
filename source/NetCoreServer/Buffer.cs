@@ -84,7 +84,9 @@ namespace NetCoreServer
         {
             Debug.Assert(((offset + size) <= Size), "Invalid offset & size!");
             if ((offset + size) > Size)
+            {
                 throw new ArgumentException("Invalid offset & size!", nameof(offset));
+            }
 
             return Encoding.UTF8.GetString(_data, (int)offset, (int)size);
         }
@@ -96,17 +98,23 @@ namespace NetCoreServer
         {
             Debug.Assert(((offset + size) <= Size), "Invalid offset & size!");
             if ((offset + size) > Size)
+            {
                 throw new ArgumentException("Invalid offset & size!", nameof(offset));
+            }
 
             Array.Copy(_data, offset + size, _data, offset, _size - size - offset);
             _size -= size;
             if (_offset >= (offset + size))
-                _offset -= size;
+            {
+                this._offset -= size;
+            }
             else if (_offset >= offset)
             {
                 _offset -= _offset - offset;
                 if (_offset > Size)
-                    _offset = Size;
+                {
+                    this._offset = this.Size;
+                }
             }
         }
 
@@ -117,7 +125,9 @@ namespace NetCoreServer
         {
             Debug.Assert((capacity >= 0), "Invalid reserve capacity!");
             if (capacity < 0)
+            {
                 throw new ArgumentException("Invalid reserve capacity!", nameof(capacity));
+            }
 
             if (capacity > Capacity)
             {
@@ -133,7 +143,9 @@ namespace NetCoreServer
             Reserve(size);
             _size = size;
             if (_offset > _size)
-                _offset = _size;
+            {
+                this._offset = this._size;
+            }
         }
 
         // Shift the current buffer offset

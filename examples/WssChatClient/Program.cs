@@ -17,7 +17,9 @@ namespace WssChatClient
             _stop = true;
             CloseAsync(1000);
             while (IsConnected)
+            {
                 Thread.Yield();
+            }
         }
 
         public override void OnWsConnecting(HttpRequest request)
@@ -59,7 +61,9 @@ namespace WssChatClient
 
             // Try to connect again
             if (!_stop)
-                ConnectAsync();
+            {
+                this.ConnectAsync();
+            }
         }
 
         protected override void OnError(SocketError error)
@@ -77,12 +81,16 @@ namespace WssChatClient
             // WebSocket server address
             string address = "127.0.0.1";
             if (args.Length > 0)
+            {
                 address = args[0];
+            }
 
             // WebSocket server port
             int port = 8443;
             if (args.Length > 1)
+            {
                 port = int.Parse(args[1]);
+            }
 
             Console.WriteLine($"WebSocket server address: {address}");
             Console.WriteLine($"WebSocket server port: {port}");
@@ -107,16 +115,23 @@ namespace WssChatClient
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Reconnect the client
                 if (line == "!")
                 {
                     Console.Write("Client reconnecting...");
                     if (client.IsConnected)
+                    {
                         client.ReconnectAsync();
+                    }
                     else
+                    {
                         client.ConnectAsync();
+                    }
+
                     Console.WriteLine("Done!");
                     continue;
                 }

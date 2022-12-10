@@ -16,7 +16,9 @@ namespace UdsChatClient
             _stop = true;
             DisconnectAsync();
             while (IsConnected)
+            {
                 Thread.Yield();
+            }
         }
 
         protected override void OnConnected()
@@ -33,7 +35,9 @@ namespace UdsChatClient
 
             // Try to connect again
             if (!_stop)
-                ConnectAsync();
+            {
+                this.ConnectAsync();
+            }
         }
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
@@ -56,7 +60,9 @@ namespace UdsChatClient
             // Unix Domain Socket path
             string path = Path.Combine(Path.GetTempPath(), "chat.sock");
             if (args.Length > 0)
+            {
                 path = args[0];
+            }
 
             Console.WriteLine($"Unix Domain Socket server path: {path}");
 
@@ -77,7 +83,9 @@ namespace UdsChatClient
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Disconnect the client
                 if (line == "!")

@@ -41,7 +41,9 @@ namespace SslChatServer
 
             // If the buffer starts with '!' the disconnect the current session
             if (message == "!")
-                Disconnect();
+            {
+                this.Disconnect();
+            }
         }
 
         protected override void OnError(SocketError error)
@@ -69,7 +71,9 @@ namespace SslChatServer
             // SSL server port
             int port = 2222;
             if (args.Length > 0)
+            {
                 port = int.Parse(args[0]);
+            }
 
             Console.WriteLine($"SSL server port: {port}");
 
@@ -93,7 +97,9 @@ namespace SslChatServer
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Restart the server
                 if (line == "!")

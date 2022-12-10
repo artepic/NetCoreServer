@@ -20,9 +20,14 @@ namespace SslMulticastServer
             const long limit = 1 * 1024 * 1024;
             long pending = BytesPending + BytesSending;
             if ((pending + size) > limit)
+            {
                 return false;
+            }
+
             if (size > (limit - pending))
+            {
                 size = limit - pending;
+            }
 
             return base.SendAsync(buffer, offset, size);
         }
@@ -112,15 +117,22 @@ namespace SslMulticastServer
                 {
                     var start = DateTime.UtcNow;
                     for (int i = 0; i < messagesRate; i++)
+                    {
                         server.Multicast(message);
+                    }
+
                     var end = DateTime.UtcNow;
 
                     // Sleep for remaining time or yield
                     var milliseconds = (int)(end - start).TotalMilliseconds;
                     if (milliseconds < 1000)
+                    {
                         Thread.Sleep(1000 - milliseconds);
+                    }
                     else
+                    {
                         Thread.Yield();
+                    }
                 }
             });
 
@@ -131,7 +143,9 @@ namespace SslMulticastServer
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Restart the server
                 if (line == "!")

@@ -43,7 +43,9 @@ namespace UdpEchoServer
             // UDP server port
             int port = 3333;
             if (args.Length > 0)
+            {
                 port = int.Parse(args[0]);
+            }
 
             Console.WriteLine($"UDP server port: {port}");
 
@@ -64,7 +66,9 @@ namespace UdpEchoServer
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Restart the server
                 if (line == "!")

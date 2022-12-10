@@ -43,7 +43,9 @@ namespace NetCoreServer
             {
                 WebSocket.PrepareSendFrame(WebSocket.WS_FIN | WebSocket.WS_CLOSE, false, Span<byte>.Empty, status);
                 if (!Multicast(WebSocket.WsSendBuffer.AsSpan()))
+                {
                     return false;
+                }
 
                 return base.DisconnectAll();
             }
@@ -56,10 +58,14 @@ namespace NetCoreServer
         public override bool Multicast(ReadOnlySpan<byte> buffer)
         {
             if (!IsStarted)
+            {
                 return false;
+            }
 
             if (buffer.IsEmpty)
+            {
                 return true;
+            }
 
             // Multicast data to all WebSocket sessions
             foreach (var session in Sessions.Values)
@@ -67,7 +73,9 @@ namespace NetCoreServer
                 if (session is WsSession wsSession)
                 {
                     if (wsSession.WebSocket.WsHandshaked)
+                    {
                         wsSession.SendAsync(buffer);
+                    }
                 }
             }
 

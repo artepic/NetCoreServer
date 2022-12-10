@@ -36,7 +36,9 @@ namespace WssChatServer
 
             // If the buffer starts with '!' the disconnect the current session
             if (message == "!")
-                Close(1000);
+            {
+                this.Close(1000);
+            }
         }
 
         protected override void OnError(SocketError error)
@@ -64,11 +66,16 @@ namespace WssChatServer
             // WebSocket server port
             int port = 8443;
             if (args.Length > 0)
+            {
                 port = int.Parse(args[0]);
+            }
+
             // WebSocket server content path
             string www = "../../../../../www/wss";
             if (args.Length > 1)
+            {
                 www = args[1];
+            }
 
             Console.WriteLine($"WebSocket server port: {port}");
             Console.WriteLine($"WebSocket server static content path: {www}");
@@ -95,7 +102,9 @@ namespace WssChatServer
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Restart the server
                 if (line == "!")

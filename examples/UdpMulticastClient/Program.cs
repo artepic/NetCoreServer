@@ -18,7 +18,9 @@ namespace UdpMulticastClient
             _stop = true;
             Disconnect();
             while (IsConnected)
+            {
                 Thread.Yield();
+            }
         }
 
         protected override void OnConnected()
@@ -41,7 +43,9 @@ namespace UdpMulticastClient
 
             // Try to connect again
             if (!_stop)
-                Connect();
+            {
+                this.Connect();
+            }
         }
 
         protected override void OnReceived(EndPoint endpoint, byte[] buffer, long offset, long size)
@@ -67,17 +71,23 @@ namespace UdpMulticastClient
             // UDP listen address
             string listenAddress = "0.0.0.0";
             if (args.Length > 0)
+            {
                 listenAddress = args[0];
+            }
 
             // UDP multicast address
             string multicastAddress = "239.255.0.1";
             if (args.Length > 1)
+            {
                 multicastAddress = args[1];
+            }
 
             // UDP multicast port
             int multicastPort = 3334;
             if (args.Length > 2)
+            {
                 multicastPort = int.Parse(args[2]);
+            }
 
             Console.WriteLine($"UDP listen address: {listenAddress}");
             Console.WriteLine($"UDP multicast address: {multicastAddress}");
@@ -102,7 +112,9 @@ namespace UdpMulticastClient
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Disconnect the client
                 if (line == "!")

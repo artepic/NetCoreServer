@@ -16,9 +16,13 @@ namespace HttpsTraceServer
         {
             // Process HTTP request methods
             if (request.Method == "TRACE")
-                SendResponseAsync(Response.MakeTraceResponse(request));
+            {
+                this.SendResponseAsync(this.Response.MakeTraceResponse(request));
+            }
             else
-                SendResponseAsync(Response.MakeErrorResponse("Unsupported HTTP method: " + request.Method));
+            {
+                this.SendResponseAsync(this.Response.MakeErrorResponse("Unsupported HTTP method: " + request.Method));
+            }
         }
 
         protected override void OnReceivedRequestError(HttpRequest request, string error)
@@ -100,7 +104,9 @@ namespace HttpsTraceServer
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Restart the server
                 if (line == "!")

@@ -163,7 +163,9 @@ namespace NetCoreServer
         public virtual bool Connect()
         {
             if (IsConnected)
+            {
                 return false;
+            }
 
             // Setup buffers
             _receiveBuffer = new Buffer();
@@ -187,7 +189,9 @@ namespace NetCoreServer
             Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, OptionExclusiveAddressUse);
             // Apply the option: dual mode (this option must be applied before recieving/sending)
             if (Socket.AddressFamily == AddressFamily.InterNetworkV6)
-                Socket.DualMode = OptionDualMode;
+            {
+                this.Socket.DualMode = this.OptionDualMode;
+            }
 
             // Call the client connecting handler
             OnConnecting();
@@ -196,7 +200,9 @@ namespace NetCoreServer
             {
                 // Bind the acceptor socket to the endpoint
                 if (OptionMulticast)
-                    Socket.Bind(Endpoint);
+                {
+                    this.Socket.Bind(this.Endpoint);
+                }
                 else
                 {
                     var endpoint = new IPEndPoint((Endpoint.AddressFamily == AddressFamily.InterNetworkV6) ? IPAddress.IPv6Any : IPAddress.Any, 0);
@@ -261,7 +267,9 @@ namespace NetCoreServer
         public virtual bool Disconnect()
         {
             if (!IsConnected)
+            {
                 return false;
+            }
 
             // Reset event args
             _receiveEventArg.Completed -= OnAsyncCompleted;
@@ -310,7 +318,9 @@ namespace NetCoreServer
         public virtual bool Reconnect()
         {
             if (!Disconnect())
+            {
                 return false;
+            }
 
             return Connect();
         }
@@ -336,9 +346,13 @@ namespace NetCoreServer
         public virtual void JoinMulticastGroup(IPAddress address)
         {
             if (Endpoint.AddressFamily == AddressFamily.InterNetworkV6)
-                Socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(address));
+            {
+                this.Socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(address));
+            }
             else
-                Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(address));
+            {
+                this.Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(address));
+            }
 
             // Call the client joined multicast group notification
             OnJoinedMulticastGroup(address);
@@ -356,9 +370,13 @@ namespace NetCoreServer
         public virtual void LeaveMulticastGroup(IPAddress address)
         {
             if (Endpoint.AddressFamily == AddressFamily.InterNetworkV6)
-                Socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.DropMembership, new IPv6MulticastOption(address));
+            {
+                this.Socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.DropMembership, new IPv6MulticastOption(address));
+            }
             else
-                Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.DropMembership, new MulticastOption(address));
+            {
+                this.Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.DropMembership, new MulticastOption(address));
+            }
 
             // Call the client left multicast group notification
             OnLeftMulticastGroup(address);
@@ -449,10 +467,14 @@ namespace NetCoreServer
         public virtual long Send(EndPoint endpoint, ReadOnlySpan<byte> buffer)
         {
             if (!IsConnected)
+            {
                 return 0;
+            }
 
             if (buffer.IsEmpty)
+            {
                 return 0;
+            }
 
             try
             {
@@ -559,13 +581,19 @@ namespace NetCoreServer
         public virtual bool SendAsync(EndPoint endpoint, ReadOnlySpan<byte> buffer)
         {
             if (_sending)
+            {
                 return false;
+            }
 
             if (!IsConnected)
+            {
                 return false;
+            }
 
             if (buffer.IsEmpty)
+            {
                 return true;
+            }
 
             // Check the send buffer limit
             if (((_sendBuffer.Size + buffer.Length) > OptionSendBufferLimit) && (OptionSendBufferLimit > 0))
@@ -624,10 +652,14 @@ namespace NetCoreServer
         public virtual long Receive(ref EndPoint endpoint, byte[] buffer, long offset, long size)
         {
             if (!IsConnected)
+            {
                 return 0;
+            }
 
             if (size == 0)
+            {
                 return 0;
+            }
 
             try
             {
@@ -680,10 +712,14 @@ namespace NetCoreServer
         private void TryReceive()
         {
             if (_receiving)
+            {
                 return;
+            }
 
             if (!IsConnected)
+            {
                 return;
+            }
 
             try
             {
@@ -692,7 +728,9 @@ namespace NetCoreServer
                 _receiveEventArg.RemoteEndPoint = _receiveEndpoint;
                 _receiveEventArg.SetBuffer(_receiveBuffer.Data, 0, (int)_receiveBuffer.Capacity);
                 if (!Socket.ReceiveFromAsync(_receiveEventArg))
-                    ProcessReceiveFrom(_receiveEventArg);
+                {
+                    this.ProcessReceiveFrom(this._receiveEventArg);
+                }
             }
             catch (ObjectDisposedException) {}
         }
@@ -703,10 +741,14 @@ namespace NetCoreServer
         private void TrySend()
         {
             if (_sending)
+            {
                 return;
+            }
 
             if (!IsConnected)
+            {
                 return;
+            }
 
             try
             {
@@ -715,7 +757,9 @@ namespace NetCoreServer
                 _sendEventArg.RemoteEndPoint = _sendEndpoint;
                 _sendEventArg.SetBuffer(_sendBuffer.Data, 0, (int)(_sendBuffer.Size));
                 if (!Socket.SendToAsync(_sendEventArg))
-                    ProcessSendTo(_sendEventArg);
+                {
+                    this.ProcessSendTo(this._sendEventArg);
+                }
             }
             catch (ObjectDisposedException) {}
         }
@@ -743,7 +787,9 @@ namespace NetCoreServer
         private void OnAsyncCompleted(object sender, SocketAsyncEventArgs e)
         {
             if (IsSocketDisposed)
+            {
                 return;
+            }
 
             // Determine which type of operation just completed and call the associated handler
             switch (e.LastOperation)
@@ -768,7 +814,9 @@ namespace NetCoreServer
             _receiving = false;
 
             if (!IsConnected)
+            {
                 return;
+            }
 
             // Disconnect on error
             if (e.SocketError != SocketError.Success)
@@ -811,7 +859,9 @@ namespace NetCoreServer
             _sending = false;
 
             if (!IsConnected)
+            {
                 return;
+            }
 
             // Disconnect on error
             if (e.SocketError != SocketError.Success)
@@ -914,7 +964,9 @@ namespace NetCoreServer
                 (error == SocketError.ConnectionReset) ||
                 (error == SocketError.OperationAborted) ||
                 (error == SocketError.Shutdown))
+            {
                 return;
+            }
 
             OnError(error);
         }

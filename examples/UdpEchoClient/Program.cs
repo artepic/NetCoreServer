@@ -16,7 +16,9 @@ namespace UdpEchoClient
             _stop = true;
             Disconnect();
             while (IsConnected)
+            {
                 Thread.Yield();
+            }
         }
 
         protected override void OnConnected()
@@ -36,7 +38,9 @@ namespace UdpEchoClient
 
             // Try to connect again
             if (!_stop)
-                Connect();
+            {
+                this.Connect();
+            }
         }
 
         protected override void OnReceived(EndPoint endpoint, byte[] buffer, long offset, long size)
@@ -62,12 +66,16 @@ namespace UdpEchoClient
             // UDP server address
             string address = "127.0.0.1";
             if (args.Length > 0)
+            {
                 address = args[0];
+            }
 
             // UDP server port
             int port = 3333;
             if (args.Length > 1)
+            {
                 port = int.Parse(args[1]);
+            }
 
             Console.WriteLine($"UDP server address: {address}");
             Console.WriteLine($"UDP server port: {port}");
@@ -89,7 +97,9 @@ namespace UdpEchoClient
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Disconnect the client
                 if (line == "!")

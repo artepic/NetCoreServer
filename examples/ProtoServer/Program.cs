@@ -139,7 +139,9 @@ namespace ProtoServer
             // Simple protocol server port
             int port = 4444;
             if (args.Length > 0)
+            {
                 port = int.Parse(args[0]);
+            }
 
             Console.WriteLine($"Simple protocol server port: {port}");
 
@@ -160,7 +162,9 @@ namespace ProtoServer
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Restart the server
                 if (line == "!")

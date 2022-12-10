@@ -21,7 +21,9 @@ namespace UdpEchoClient
             ReceiveAsync();
 
             for (long i = _messages; i > 0; i--)
-                SendMessage();
+            {
+                this.SendMessage();
+            }
         }
 
         protected override void OnReceived(EndPoint endpoint, byte[] buffer, long offset, long size)
@@ -125,11 +127,19 @@ namespace UdpEchoClient
             // Connect clients
             Console.Write("Clients connecting...");
             foreach (var client in echoClients)
+            {
                 client.Connect();
+            }
+
             Console.WriteLine("Done!");
             foreach (var client in echoClients)
+            {
                 while (!client.IsConnected)
+                {
                     Thread.Yield();
+                }
+            }
+
             Console.WriteLine("All clients connected!");
 
             // Wait for benchmarking
@@ -140,11 +150,19 @@ namespace UdpEchoClient
             // Disconnect clients
             Console.Write("Clients disconnecting...");
             foreach (var client in echoClients)
+            {
                 client.Disconnect();
+            }
+
             Console.WriteLine("Done!");
             foreach (var client in echoClients)
+            {
                 while (client.IsConnected)
+                {
                     Thread.Yield();
+                }
+            }
+
             Console.WriteLine("All clients disconnected!");
 
             Console.WriteLine();

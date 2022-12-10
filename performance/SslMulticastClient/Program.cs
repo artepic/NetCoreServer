@@ -100,11 +100,19 @@ namespace SslMulticastClient
             // Connect clients
             Console.Write("Clients connecting...");
             foreach (var client in multicastClients)
+            {
                 client.ConnectAsync();
+            }
+
             Console.WriteLine("Done!");
             foreach (var client in multicastClients)
+            {
                 while (!client.IsHandshaked)
+                {
                     Thread.Yield();
+                }
+            }
+
             Console.WriteLine("All clients connected!");
 
             // Wait for benchmarking
@@ -115,11 +123,19 @@ namespace SslMulticastClient
             // Disconnect clients
             Console.Write("Clients disconnecting...");
             foreach (var client in multicastClients)
+            {
                 client.DisconnectAsync();
+            }
+
             Console.WriteLine("Done!");
             foreach (var client in multicastClients)
+            {
                 while (client.IsConnected)
+                {
                     Thread.Yield();
+                }
+            }
+
             Console.WriteLine("All clients disconnected!");
 
             TimestampStop = DateTime.UtcNow;

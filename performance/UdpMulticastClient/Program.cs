@@ -113,11 +113,19 @@ namespace UdpMulticastClient
             // Connect clients
             Console.Write("Clients connecting...");
             foreach (var client in multicastClients)
+            {
                 client.Connect();
+            }
+
             Console.WriteLine("Done!");
             foreach (var client in multicastClients)
+            {
                 while (!client.IsConnected)
+                {
                     Thread.Yield();
+                }
+            }
+
             Console.WriteLine("All clients connected!");
 
             // Wait for benchmarking
@@ -128,11 +136,19 @@ namespace UdpMulticastClient
             // Disconnect clients
             Console.Write("Clients disconnecting...");
             foreach (var client in multicastClients)
+            {
                 client.Disconnect();
+            }
+
             Console.WriteLine("Done!");
             foreach (var client in multicastClients)
+            {
                 while (client.IsConnected)
+                {
                     Thread.Yield();
+                }
+            }
+
             Console.WriteLine("All clients disconnected!");
 
             TimestampStop = DateTime.UtcNow;

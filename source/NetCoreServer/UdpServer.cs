@@ -165,7 +165,9 @@ namespace NetCoreServer
         {
             Debug.Assert(!IsStarted, "UDP server is already started!");
             if (IsStarted)
+            {
                 return false;
+            }
 
             // Setup buffers
             _receiveBuffer = new Buffer();
@@ -189,7 +191,9 @@ namespace NetCoreServer
             Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, OptionExclusiveAddressUse);
             // Apply the option: dual mode (this option must be applied before recieving)
             if (Socket.AddressFamily == AddressFamily.InterNetworkV6)
-                Socket.DualMode = OptionDualMode;
+            {
+                this.Socket.DualMode = this.OptionDualMode;
+            }
 
             // Bind the server socket to the endpoint
             Socket.Bind(Endpoint);
@@ -257,7 +261,9 @@ namespace NetCoreServer
         {
             Debug.Assert(IsStarted, "UDP server is not started!");
             if (!IsStarted)
+            {
                 return false;
+            }
 
             // Reset event args
             _receiveEventArg.Completed -= OnAsyncCompleted;
@@ -306,7 +312,9 @@ namespace NetCoreServer
         public virtual bool Restart()
         {
             if (!Stop())
+            {
                 return false;
+            }
 
             return Start();
         }
@@ -465,10 +473,14 @@ namespace NetCoreServer
         public virtual long Send(EndPoint endpoint, ReadOnlySpan<byte> buffer)
         {
             if (!IsStarted)
+            {
                 return 0;
+            }
 
             if (buffer.IsEmpty)
+            {
                 return 0;
+            }
 
             try
             {
@@ -537,13 +549,19 @@ namespace NetCoreServer
         public virtual bool SendAsync(EndPoint endpoint, ReadOnlySpan<byte> buffer)
         {
             if (_sending)
+            {
                 return false;
+            }
 
             if (!IsStarted)
+            {
                 return false;
+            }
 
             if (buffer.IsEmpty)
+            {
                 return true;
+            }
 
             // Check the send buffer limit
             if (((_sendBuffer.Size + buffer.Length) > OptionSendBufferLimit) && (OptionSendBufferLimit > 0))
@@ -602,10 +620,14 @@ namespace NetCoreServer
         public virtual long Receive(ref EndPoint endpoint, byte[] buffer, long offset, long size)
         {
             if (!IsStarted)
+            {
                 return 0;
+            }
 
             if (size == 0)
+            {
                 return 0;
+            }
 
             try
             {
@@ -657,10 +679,14 @@ namespace NetCoreServer
         private void TryReceive()
         {
             if (_receiving)
+            {
                 return;
+            }
 
             if (!IsStarted)
+            {
                 return;
+            }
 
             try
             {
@@ -669,7 +695,9 @@ namespace NetCoreServer
                 _receiveEventArg.RemoteEndPoint = _receiveEndpoint;
                 _receiveEventArg.SetBuffer(_receiveBuffer.Data, 0, (int)_receiveBuffer.Capacity);
                 if (!Socket.ReceiveFromAsync(_receiveEventArg))
-                    ProcessReceiveFrom(_receiveEventArg);
+                {
+                    this.ProcessReceiveFrom(this._receiveEventArg);
+                }
             }
             catch (ObjectDisposedException) {}
         }
@@ -680,10 +708,14 @@ namespace NetCoreServer
         private void TrySend()
         {
             if (_sending)
+            {
                 return;
+            }
 
             if (!IsStarted)
+            {
                 return;
+            }
 
             try
             {
@@ -692,7 +724,9 @@ namespace NetCoreServer
                 _sendEventArg.RemoteEndPoint = _sendEndpoint;
                 _sendEventArg.SetBuffer(_sendBuffer.Data, 0, (int)(_sendBuffer.Size));
                 if (!Socket.SendToAsync(_sendEventArg))
-                    ProcessSendTo(_sendEventArg);
+                {
+                    this.ProcessSendTo(this._sendEventArg);
+                }
             }
             catch (ObjectDisposedException) {}
         }
@@ -720,7 +754,9 @@ namespace NetCoreServer
         private void OnAsyncCompleted(object sender, SocketAsyncEventArgs e)
         {
             if (IsSocketDisposed)
+            {
                 return;
+            }
 
             // Determine which type of operation just completed and call the associated handler
             switch (e.LastOperation)
@@ -745,7 +781,9 @@ namespace NetCoreServer
             _receiving = false;
 
             if (!IsStarted)
+            {
                 return;
+            }
 
             // Check for error
             if (e.SocketError != SocketError.Success)
@@ -794,7 +832,9 @@ namespace NetCoreServer
             _sending = false;
 
             if (!IsStarted)
+            {
                 return;
+            }
 
             // Check for error
             if (e.SocketError != SocketError.Success)
@@ -889,7 +929,9 @@ namespace NetCoreServer
                 (error == SocketError.ConnectionReset) ||
                 (error == SocketError.OperationAborted) ||
                 (error == SocketError.Shutdown))
+            {
                 return;
+            }
 
             OnError(error);
         }

@@ -215,7 +215,9 @@ namespace NetCoreServer
             var result = new Buffer();
 
             if (!WebSocket.WsHandshaked)
+            {
                 return result.ExtractString(0, result.Data.Length);
+            }
 
             var cache = new Buffer();
 
@@ -228,11 +230,16 @@ namespace NetCoreServer
                     cache.Resize(required);
                     long received = (int)base.Receive(cache.Data, 0, required);
                     if (received != required)
+                    {
                         return result.ExtractString(0, result.Data.Length);
+                    }
+
                     WebSocket.PrepareReceiveFrame(cache.Data, 0, received);
                 }
                 if (!WebSocket.WsFinalReceived)
-                    WebSocket.PrepareReceiveFrame(null, 0, 0);
+                {
+                    this.WebSocket.PrepareReceiveFrame(null, 0, 0);
+                }
             }
 
             // Copy WebSocket frame data
@@ -246,7 +253,9 @@ namespace NetCoreServer
             var result = new Buffer();
 
             if (!WebSocket.WsHandshaked)
+            {
                 return result;
+            }
 
             var cache = new Buffer();
 
@@ -259,11 +268,16 @@ namespace NetCoreServer
                     cache.Resize(required);
                     long received = (int)base.Receive(cache.Data, 0, required);
                     if (received != required)
+                    {
                         return result;
+                    }
+
                     WebSocket.PrepareReceiveFrame(cache.Data, 0, received);
                 }
                 if (!WebSocket.WsFinalReceived)
-                    WebSocket.PrepareReceiveFrame(null, 0, 0);
+                {
+                    this.WebSocket.PrepareReceiveFrame(null, 0, 0);
+                }
             }
 
             // Copy WebSocket frame data
@@ -286,15 +300,21 @@ namespace NetCoreServer
 
             // Send the WebSocket upgrade HTTP request
             if (_syncConnect)
-                SendRequest(Request);
+            {
+                this.SendRequest(this.Request);
+            }
             else
-                SendRequestAsync(Request);
+            {
+                this.SendRequestAsync(this.Request);
+            }
         }
 
         protected override void OnDisconnecting()
         {
             if (WebSocket.WsHandshaked)
-                OnWsDisconnecting();
+            {
+                this.OnWsDisconnecting();
+            }
         }
 
         protected override void OnDisconnected()
@@ -334,7 +354,9 @@ namespace NetCoreServer
         {
             // Check for WebSocket handshaked status
             if (WebSocket.WsHandshaked)
+            {
                 return;
+            }
 
             // Try to perform WebSocket upgrade
             if (!WebSocket.PerformClientUpgrade(response, Id))

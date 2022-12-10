@@ -12,12 +12,16 @@ namespace HttpClient
             // HTTP server address
             string address = "localhost";
             if (args.Length > 0)
+            {
                 address = args[0];
+            }
 
             // HTTP server port
             int port = 8080;
             if (args.Length > 1)
+            {
                 port = int.Parse(args[1]);
+            }
 
             Console.WriteLine($"HTTP server address: {address}");
             Console.WriteLine($"HTTP server port: {port}");
@@ -34,16 +38,23 @@ namespace HttpClient
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Reconnect the client
                 if (line == "!")
                 {
                     Console.Write("Client reconnecting...");
                     if (client.IsConnected)
+                    {
                         client.ReconnectAsync();
+                    }
                     else
+                    {
                         client.ConnectAsync();
+                    }
+
                     Console.WriteLine("Done!");
                     continue;
                 }
@@ -103,7 +114,9 @@ namespace HttpClient
                     Console.WriteLine(response);
                 }
                 else
+                {
                     Console.WriteLine("Unknown HTTP method");
+                }
             }
 
             // Disconnect the client

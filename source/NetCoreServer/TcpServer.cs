@@ -198,7 +198,9 @@ namespace NetCoreServer
         {
             Debug.Assert(!IsStarted, "TCP server is already started!");
             if (IsStarted)
+            {
                 return false;
+            }
 
             // Setup acceptor event arg
             _acceptorEventArg = new SocketAsyncEventArgs();
@@ -216,7 +218,9 @@ namespace NetCoreServer
             _acceptorSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, OptionExclusiveAddressUse);
             // Apply the option: dual mode (this option must be applied before listening)
             if (_acceptorSocket.AddressFamily == AddressFamily.InterNetworkV6)
-                _acceptorSocket.DualMode = OptionDualMode;
+            {
+                this._acceptorSocket.DualMode = this.OptionDualMode;
+            }
 
             // Bind the acceptor socket to the endpoint
             _acceptorSocket.Bind(Endpoint);
@@ -255,7 +259,9 @@ namespace NetCoreServer
         {
             Debug.Assert(IsStarted, "TCP server is not started!");
             if (!IsStarted)
+            {
                 return false;
+            }
 
             // Stop accepting new clients
             IsAccepting = false;
@@ -301,10 +307,14 @@ namespace NetCoreServer
         public virtual bool Restart()
         {
             if (!Stop())
+            {
                 return false;
+            }
 
             while (IsStarted)
+            {
                 Thread.Yield();
+            }
 
             return Start();
         }
@@ -323,7 +333,9 @@ namespace NetCoreServer
 
             // Async accept a new client connection
             if (!_acceptorSocket.AcceptAsync(e))
-                ProcessAccept(e);
+            {
+                this.ProcessAccept(e);
+            }
         }
 
         /// <summary>
@@ -343,11 +355,15 @@ namespace NetCoreServer
                 session.Connect(e.AcceptSocket);
             }
             else
-                SendError(e.SocketError);
+            {
+                this.SendError(e.SocketError);
+            }
 
             // Accept the next client connection
             if (IsAccepting)
-                StartAccept(e);
+            {
+                this.StartAccept(e);
+            }
         }
 
         /// <summary>
@@ -357,7 +373,9 @@ namespace NetCoreServer
         private void OnAsyncCompleted(object sender, SocketAsyncEventArgs e)
         {
             if (IsSocketDisposed)
+            {
                 return;
+            }
 
             ProcessAccept(e);
         }
@@ -386,11 +404,15 @@ namespace NetCoreServer
         public virtual bool DisconnectAll()
         {
             if (!IsStarted)
+            {
                 return false;
+            }
 
             // Disconnect all sessions
             foreach (var session in Sessions.Values)
+            {
                 session.Disconnect();
+            }
 
             return true;
         }
@@ -454,14 +476,20 @@ namespace NetCoreServer
         public virtual bool Multicast(ReadOnlySpan<byte> buffer)
         {
             if (!IsStarted)
+            {
                 return false;
+            }
 
             if (buffer.IsEmpty)
+            {
                 return true;
+            }
 
             // Multicast data to all sessions
             foreach (var session in Sessions.Values)
+            {
                 session.SendAsync(buffer);
+            }
 
             return true;
         }
@@ -549,7 +577,9 @@ namespace NetCoreServer
                 (error == SocketError.ConnectionReset) ||
                 (error == SocketError.OperationAborted) ||
                 (error == SocketError.Shutdown))
+            {
                 return;
+            }
 
             OnError(error);
         }

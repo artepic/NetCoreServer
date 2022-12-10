@@ -84,30 +84,40 @@ namespace tests
             var server = new EchoWsServer(IPAddress.Any, port);
             Assert.True(server.Start());
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Create and connect Echo client
             var client = new EchoWsClient(address, port);
             Assert.True(client.ConnectAsync());
             while (!client.IsWsConnected || (server.Clients != 1))
+            {
                 Thread.Yield();
+            }
 
             // Send a message to the Echo server
             client.SendTextAsync("test");
 
             // Wait for all data processed...
             while (client.Received != 4)
+            {
                 Thread.Yield();
+            }
 
             // Disconnect the Echo client
             Assert.True(client.CloseAsync(1000));
             while (client.IsWsConnected || (server.Clients != 0))
+            {
                 Thread.Yield();
+            }
 
             // Stop the Echo server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Check the Echo server state
             Assert.True(server.Started);
@@ -136,80 +146,106 @@ namespace tests
             var server = new EchoWsServer(IPAddress.Any, port);
             Assert.True(server.Start());
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Create and connect Echo client
             var client1 = new EchoWsClient(address, port);
             Assert.True(client1.ConnectAsync());
             while (!client1.IsWsConnected || (server.Clients != 1))
+            {
                 Thread.Yield();
+            }
 
             // Multicast some data to all clients
             server.MulticastText("test");
 
             // Wait for all data processed...
             while (client1.Received != 4)
+            {
                 Thread.Yield();
+            }
 
             // Create and connect Echo client
             var client2 = new EchoWsClient(address, port);
             Assert.True(client2.ConnectAsync());
             while (!client2.IsWsConnected || (server.Clients != 2))
+            {
                 Thread.Yield();
+            }
 
             // Multicast some data to all clients
             server.MulticastText("test");
 
             // Wait for all data processed...
             while ((client1.Received != 8) || (client2.Received != 4))
+            {
                 Thread.Yield();
+            }
 
             // Create and connect Echo client
             var client3 = new EchoWsClient(address, port);
             Assert.True(client3.ConnectAsync());
             while (!client3.IsWsConnected || (server.Clients != 3))
+            {
                 Thread.Yield();
+            }
 
             // Multicast some data to all clients
             server.MulticastText("test");
 
             // Wait for all data processed...
             while ((client1.Received != 12) || (client2.Received != 8) || (client3.Received != 4))
+            {
                 Thread.Yield();
+            }
 
             // Disconnect the Echo client
             Assert.True(client1.CloseAsync(1000));
             while (client1.IsWsConnected || (server.Clients != 2))
+            {
                 Thread.Yield();
+            }
 
             // Multicast some data to all clients
             server.MulticastText("test");
 
             // Wait for all data processed...
             while ((client1.Received != 12) || (client2.Received != 12) || (client3.Received != 8))
+            {
                 Thread.Yield();
+            }
 
             // Disconnect the Echo client
             Assert.True(client2.CloseAsync(1000));
             while (client2.IsWsConnected || (server.Clients != 1))
+            {
                 Thread.Yield();
+            }
 
             // Multicast some data to all clients
             server.MulticastText("test");
 
             // Wait for all data processed...
             while ((client1.Received != 12) || (client2.Received != 12) || (client3.Received != 12))
+            {
                 Thread.Yield();
+            }
 
             // Disconnect the Echo client
             Assert.True(client3.CloseAsync(1000));
             while (client3.IsWsConnected || (server.Clients != 0))
+            {
                 Thread.Yield();
+            }
 
             // Stop the Echo server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Check the Echo server state
             Assert.True(server.Started);
@@ -242,7 +278,9 @@ namespace tests
             var server = new EchoWsServer(IPAddress.Any, port);
             Assert.True(server.Start());
             while (!server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Test duration in seconds
             int duration = 10;
@@ -270,7 +308,9 @@ namespace tests
                         clients.Add(client);
                         client.ConnectAsync();
                         while (!client.IsWsConnected)
+                        {
                             Thread.Yield();
+                        }
                     }
                 }
                 // Connect/Disconnect the random client
@@ -284,13 +324,17 @@ namespace tests
                         {
                             client.CloseAsync(1000);
                             while (client.IsWsConnected)
+                            {
                                 Thread.Yield();
+                            }
                         }
                         else
                         {
                             client.ConnectAsync();
                             while (!client.IsWsConnected)
+                            {
                                 Thread.Yield();
+                            }
                         }
                     }
                 }
@@ -305,7 +349,9 @@ namespace tests
                         {
                             client.ReconnectAsync();
                             while (!client.IsWsConnected)
+                            {
                                 Thread.Yield();
+                            }
                         }
                     }
                 }
@@ -322,7 +368,9 @@ namespace tests
                         int index = rand.Next() % clients.Count;
                         var client = clients[index];
                         if (client.IsWsConnected)
+                        {
                             client.SendTextAsync("test");
+                        }
                     }
                 }
 
@@ -335,13 +383,17 @@ namespace tests
             {
                 client.CloseAsync(1000);
                 while (client.IsWsConnected)
+                {
                     Thread.Yield();
+                }
             }
 
             // Stop the Echo server
             Assert.True(server.Stop());
             while (server.IsStarted)
+            {
                 Thread.Yield();
+            }
 
             // Check the Echo server state
             Assert.True(server.Started);

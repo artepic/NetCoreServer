@@ -145,7 +145,9 @@ namespace NetCoreServer
         {
             Debug.Assert((i < _headers.Count), "Index out of bounds!");
             if (i >= _headers.Count)
+            {
                 return ("", "");
+            }
 
             return _headers[i];
         }
@@ -340,7 +342,9 @@ namespace NetCoreServer
         {
             // Try to lookup the content type in mime table
             if (_mimeTable.TryGetValue(extension, out string mime))
-                return SetHeader("Content-Type", mime);
+            {
+                return this.SetHeader("Content-Type", mime);
+            }
 
             return this;
         }
@@ -407,11 +411,19 @@ namespace NetCoreServer
                 _cache.Append(path);
             }
             if (secure)
-                _cache.Append("; Secure");
+            {
+                this._cache.Append("; Secure");
+            }
+
             if (strict)
-                _cache.Append("; SameSite=Strict");
+            {
+                this._cache.Append("; SameSite=Strict");
+            }
+
             if (httpOnly)
-                _cache.Append("; HttpOnly");
+            {
+                this._cache.Append("; HttpOnly");
+            }
 
             int valueSize = (int)_cache.Size - valueIndex;
 
@@ -536,7 +548,10 @@ namespace NetCoreServer
             Clear();
             SetBegin(status);
             if (!string.IsNullOrEmpty(contentType))
-                SetHeader("Content-Type", contentType);
+            {
+                this.SetHeader("Content-Type", contentType);
+            }
+
             SetBody(content);
             return this;
         }
@@ -569,7 +584,10 @@ namespace NetCoreServer
             Clear();
             SetBegin(200);
             if (!string.IsNullOrEmpty(contentType))
-                SetHeader("Content-Type", contentType);
+            {
+                this.SetHeader("Content-Type", contentType);
+            }
+
             SetBody(content);
             return this;
         }
@@ -591,7 +609,10 @@ namespace NetCoreServer
             Clear();
             SetBegin(200);
             if (!string.IsNullOrEmpty(contentType))
-                SetHeader("Content-Type", contentType);
+            {
+                this.SetHeader("Content-Type", contentType);
+            }
+
             SetBody(content);
             return this;
         }
@@ -693,7 +714,9 @@ namespace NetCoreServer
             {
                 // Check for the request cache out of bounds
                 if ((i + 3) >= (int)_cache.Size)
+                {
                     break;
+                }
 
                 // Check for the header separator
                 if ((_cache[i + 0] == '\r') && (_cache[i + 1] == '\n') && (_cache[i + 2] == '\r') && (_cache[i + 3] == '\n'))
@@ -711,11 +734,16 @@ namespace NetCoreServer
                         protocolSize++;
                         index++;
                         if (index >= (int)_cache.Size)
+                        {
                             return false;
+                        }
                     }
                     index++;
                     if ((index >= (int)_cache.Size))
+                    {
                         return false;
+                    }
+
                     _protocol = _cache.ExtractString(protocolIndex, protocolSize);
 
                     // Parse status code
@@ -724,11 +752,16 @@ namespace NetCoreServer
                     while (_cache[index] != ' ')
                     {
                         if ((_cache[index] < '0') || (_cache[index] > '9'))
+                        {
                             return false;
+                        }
+
                         statusSize++;
                         index++;
                         if (index >= (int)_cache.Size)
+                        {
                             return false;
+                        }
                     }
                     Status = 0;
                     for (int j = statusIndex; j < (statusIndex + statusSize); j++)
@@ -738,7 +771,9 @@ namespace NetCoreServer
                     }
                     index++;
                     if (index >= (int)_cache.Size)
+                    {
                         return false;
+                    }
 
                     // Parse status phrase
                     int statusPhraseIndex = index;
@@ -748,14 +783,22 @@ namespace NetCoreServer
                         statusPhraseSize++;
                         index++;
                         if (index >= (int)_cache.Size)
+                        {
                             return false;
+                        }
                     }
                     index++;
                     if ((index >= (int)_cache.Size) || (_cache[index] != '\n'))
+                    {
                         return false;
+                    }
+
                     index++;
                     if (index >= (int)_cache.Size)
+                    {
                         return false;
+                    }
+
                     _statusPhrase = _cache.ExtractString(statusPhraseIndex, statusPhraseSize);
 
                     // Parse headers
@@ -769,24 +812,39 @@ namespace NetCoreServer
                             headerNameSize++;
                             index++;
                             if (index >= i)
+                            {
                                 break;
+                            }
+
                             if (index >= (int)_cache.Size)
+                            {
                                 return false;
+                            }
                         }
                         index++;
                         if (index >= i)
+                        {
                             break;
+                        }
+
                         if (index >= (int)_cache.Size)
+                        {
                             return false;
+                        }
 
                         // Skip all prefix space characters
                         while (char.IsWhiteSpace((char)_cache[index]))
                         {
                             index++;
                             if (index >= i)
+                            {
                                 break;
+                            }
+
                             if (index >= (int)_cache.Size)
+                            {
                                 return false;
+                            }
                         }
 
                         // Parse header value
@@ -797,20 +855,32 @@ namespace NetCoreServer
                             headerValueSize++;
                             index++;
                             if (index >= i)
+                            {
                                 break;
+                            }
+
                             if (index >= (int)_cache.Size)
+                            {
                                 return false;
+                            }
                         }
                         index++;
                         if ((index >= (int)_cache.Size) || (_cache[index] != '\n'))
+                        {
                             return false;
+                        }
+
                         index++;
                         if (index >= (int)_cache.Size)
+                        {
                             return false;
+                        }
 
                         // Validate header name and value (sometimes value can be empty)
                         if (headerNameSize == 0)
+                        {
                             return false;
+                        }
 
                         // Add a new header
                         string headerName = _cache.ExtractString(headerNameIndex, headerNameSize);
@@ -824,7 +894,10 @@ namespace NetCoreServer
                             for (int j = headerValueIndex; j < (headerValueIndex + headerValueSize); j++)
                             {
                                 if ((_cache[j] < '0') || (_cache[j] > '9'))
+                                {
                                     return false;
+                                }
+
                                 _bodyLength *= 10;
                                 _bodyLength += _cache[j] - '0';
                                 _bodyLengthProvided = true;

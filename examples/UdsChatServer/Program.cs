@@ -34,7 +34,9 @@ namespace UdsChatServer
 
             // If the buffer starts with '!' the disconnect the current session
             if (message == "!")
-                Disconnect();
+            {
+                this.Disconnect();
+            }
         }
 
         protected override void OnError(SocketError error)
@@ -62,7 +64,9 @@ namespace UdsChatServer
             // Unix Domain Socket path
             string path = Path.Combine(Path.GetTempPath(), "chat.sock");
             if (args.Length > 0)
+            {
                 path = args[0];
+            }
 
             Console.WriteLine($"Unix Domain Socket server path: {path}");
 
@@ -83,7 +87,9 @@ namespace UdsChatServer
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Restart the server
                 if (line == "!")

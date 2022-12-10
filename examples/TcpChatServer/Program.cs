@@ -34,7 +34,9 @@ namespace TcpChatServer
 
             // If the buffer starts with '!' the disconnect the current session
             if (message == "!")
-                Disconnect();
+            {
+                this.Disconnect();
+            }
         }
 
         protected override void OnError(SocketError error)
@@ -62,7 +64,9 @@ namespace TcpChatServer
             // TCP server port
             int port = 1111;
             if (args.Length > 0)
+            {
                 port = int.Parse(args[0]);
+            }
 
             Console.WriteLine($"TCP server port: {port}");
 
@@ -83,7 +87,9 @@ namespace TcpChatServer
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Restart the server
                 if (line == "!")

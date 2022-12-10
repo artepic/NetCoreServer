@@ -14,12 +14,16 @@ namespace HttpsClient
             // HTTPS server address
             string address = "localhost";
             if (args.Length > 0)
+            {
                 address = args[0];
+            }
 
             // HTTPS server port
             int port = 8443;
             if (args.Length > 1)
+            {
                 port = int.Parse(args[1]);
+            }
 
             Console.WriteLine($"HTTPS server address: {address}");
             Console.WriteLine($"HTTPS server port: {port}");
@@ -39,16 +43,23 @@ namespace HttpsClient
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Reconnect the client
                 if (line == "!")
                 {
                     Console.Write("Client reconnecting...");
                     if (client.IsConnected)
+                    {
                         client.ReconnectAsync();
+                    }
                     else
+                    {
                         client.ConnectAsync();
+                    }
+
                     Console.WriteLine("Done!");
                     continue;
                 }
@@ -108,7 +119,9 @@ namespace HttpsClient
                     Console.WriteLine(response);
                 }
                 else
+                {
                     Console.WriteLine("Unknown HTTP method");
+                }
             }
 
             // Disconnect the client

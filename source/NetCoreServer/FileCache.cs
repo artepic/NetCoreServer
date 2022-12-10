@@ -61,7 +61,9 @@ namespace NetCoreServer
             {
                 // Try to find the given key
                 if (!_entriesByKey.TryGetValue(key, out var cacheValue))
+                {
                     return (false, new byte[0]);
+                }
 
                 return (true, cacheValue.Value);
             }
@@ -110,7 +112,9 @@ namespace NetCoreServer
 
             // Insert the cache path
             if (!InsertPathInternal(path, path, prefix, timeout, handler))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -148,7 +152,9 @@ namespace NetCoreServer
             {
                 // Stop all file system watchers
                 foreach (var fileCacheEntry in _pathsByKey)
+                {
                     fileCacheEntry.Value.StopWatcher();
+                }
 
                 // Clear all cache entries
                 _entriesByKey.Clear();
@@ -233,7 +239,9 @@ namespace NetCoreServer
                 {
                     // Skip directory updates
                     if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
+                    {
                         return true;
+                    }
                 }
                 catch (Exception) {}
 
@@ -247,10 +255,15 @@ namespace NetCoreServer
 
                 // Skip missing files
                 if (!File.Exists(file))
+                {
                     return;
+                }
+
                 // Skip directory updates
                 if (IsDirectory(file))
+                {
                     return;
+                }
 
                 cache.InsertFileInternal(entry._path, file, key, entry._timespan, entry._handler);
             }
@@ -258,17 +271,24 @@ namespace NetCoreServer
             private static void OnChanged(object sender, FileSystemEventArgs e, FileCache cache, FileCacheEntry entry)
             {
                 if (e.ChangeType != WatcherChangeTypes.Changed)
+                {
                     return;
+                }
 
                 var key = e.FullPath.Replace('\\', '/').Replace(entry._path + "/", entry._prefix);
                 var file = e.FullPath.Replace('\\', '/');
 
                 // Skip missing files
                 if (!File.Exists(file))
+                {
                     return;
+                }
+
                 // Skip directory updates
                 if (IsDirectory(file))
+                {
                     return;
+                }
 
                 cache.InsertFileInternal(entry._path, file, key, entry._timespan, entry._handler);
             }
@@ -290,10 +310,15 @@ namespace NetCoreServer
 
                 // Skip missing files
                 if (!File.Exists(newFile))
+                {
                     return;
+                }
+
                 // Skip directory updates
                 if (IsDirectory(newFile))
+                {
                     return;
+                }
 
                 cache.RemoveFileInternal(entry._path, oldKey);
                 cache.InsertFileInternal(entry._path, newFile, newKey, entry._timespan, entry._handler);
@@ -307,7 +332,9 @@ namespace NetCoreServer
                 // Load the cache file content
                 var content = File.ReadAllBytes(file);
                 if (!handler(this, key, content, timeout))
+                {
                     return false;
+                }
 
                 using (new WriteLock(_lockEx))
                 {
@@ -348,7 +375,9 @@ namespace NetCoreServer
 
                     // Recursively insert sub-directory
                     if (!InsertPathInternal(root, item, key, timeout, handler))
+                    {
                         return false;
+                    }
                 }
 
                 foreach (var item in Directory.GetFiles(path))
@@ -357,7 +386,9 @@ namespace NetCoreServer
 
                     // Insert file into the cache
                     if (!InsertFileInternal(root, item, key, timeout, handler))
+                    {
                         return false;
+                    }
                 }
 
                 return true;
@@ -371,14 +402,19 @@ namespace NetCoreServer
             {
                 // Try to find the given path
                 if (!_pathsByKey.TryGetValue(path, out var cacheValue))
+                {
                     return false;
+                }
 
                 // Stop the file system watcher
                 cacheValue.StopWatcher();
 
                 // Remove path entries
                 foreach (var entryKey in _entriesByPath[path])
-                    _entriesByKey.Remove(entryKey);
+                {
+                    this._entriesByKey.Remove(entryKey);
+                }
+
                 _entriesByPath.Remove(path);
 
                 // Remove cache path

@@ -15,7 +15,9 @@ namespace TcpChatClient
             _stop = true;
             DisconnectAsync();
             while (IsConnected)
+            {
                 Thread.Yield();
+            }
         }
 
         protected override void OnConnected()
@@ -32,7 +34,9 @@ namespace TcpChatClient
 
             // Try to connect again
             if (!_stop)
-                ConnectAsync();
+            {
+                this.ConnectAsync();
+            }
         }
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
@@ -55,12 +59,16 @@ namespace TcpChatClient
             // TCP server address
             string address = "127.0.0.1";
             if (args.Length > 0)
+            {
                 address = args[0];
+            }
 
             // TCP server port
             int port = 1111;
             if (args.Length > 1)
+            {
                 port = int.Parse(args[1]);
+            }
 
             Console.WriteLine($"TCP server address: {address}");
             Console.WriteLine($"TCP server port: {port}");
@@ -82,7 +90,9 @@ namespace TcpChatClient
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Disconnect the client
                 if (line == "!")

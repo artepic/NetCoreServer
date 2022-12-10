@@ -14,7 +14,10 @@ namespace HttpsServer
         public static CommonCache GetInstance()
         {
             if (_instance == null)
+            {
                 _instance = new CommonCache();
+            }
+
             return _instance;
         }
 
@@ -63,7 +66,9 @@ namespace HttpsServer
 
             // Process HTTP request methods
             if (request.Method == "HEAD")
-                SendResponseAsync(Response.MakeHeadResponse());
+            {
+                this.SendResponseAsync(this.Response.MakeHeadResponse());
+            }
             else if (request.Method == "GET")
             {
                 string key = request.Url;
@@ -85,7 +90,9 @@ namespace HttpsServer
                     SendResponseAsync(Response.MakeGetResponse(value));
                 }
                 else
-                    SendResponseAsync(Response.MakeErrorResponse(404, "Required cache value was not found for the key: " + key));
+                {
+                    this.SendResponseAsync(this.Response.MakeErrorResponse(404, "Required cache value was not found for the key: " + key));
+                }
             }
             else if ((request.Method == "POST") || (request.Method == "PUT"))
             {
@@ -119,14 +126,22 @@ namespace HttpsServer
                     SendResponseAsync(Response.MakeGetResponse(value));
                 }
                 else
-                    SendResponseAsync(Response.MakeErrorResponse(404, "Deleted cache value was not found for the key: " + key));
+                {
+                    this.SendResponseAsync(this.Response.MakeErrorResponse(404, "Deleted cache value was not found for the key: " + key));
+                }
             }
             else if (request.Method == "OPTIONS")
-                SendResponseAsync(Response.MakeOptionsResponse());
+            {
+                this.SendResponseAsync(this.Response.MakeOptionsResponse());
+            }
             else if (request.Method == "TRACE")
-                SendResponseAsync(Response.MakeTraceResponse(request));
+            {
+                this.SendResponseAsync(this.Response.MakeTraceResponse(request));
+            }
             else
-                SendResponseAsync(Response.MakeErrorResponse("Unsupported HTTP method: " + request.Method));
+            {
+                this.SendResponseAsync(this.Response.MakeErrorResponse("Unsupported HTTP method: " + request.Method));
+            }
         }
 
         protected override void OnReceivedRequestError(HttpRequest request, string error)
@@ -159,11 +174,16 @@ namespace HttpsServer
             // HTTPS server port
             int port = 8443;
             if (args.Length > 0)
+            {
                 port = int.Parse(args[0]);
+            }
+
             // HTTPS server content path
             string www = "../../../../../www/api";
             if (args.Length > 1)
+            {
                 www = args[1];
+            }
 
             Console.WriteLine($"HTTPS server port: {port}");
             Console.WriteLine($"HTTPS server static content path: {www}");
@@ -190,7 +210,9 @@ namespace HttpsServer
             {
                 string line = Console.ReadLine();
                 if (string.IsNullOrEmpty(line))
+                {
                     break;
+                }
 
                 // Restart the server
                 if (line == "!")

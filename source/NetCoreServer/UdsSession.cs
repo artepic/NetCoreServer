@@ -125,7 +125,9 @@ namespace NetCoreServer
 
             // Check the socket disposed state: in some rare cases it might be disconnected while receiving!
             if (IsSocketDisposed)
+            {
                 return;
+            }
 
             // Call the session connected handler
             OnConnected();
@@ -135,7 +137,9 @@ namespace NetCoreServer
 
             // Call the empty send buffer handler
             if (_sendBufferMain.IsEmpty)
-                OnEmpty();
+            {
+                this.OnEmpty();
+            }
         }
 
         /// <summary>
@@ -145,7 +149,9 @@ namespace NetCoreServer
         public virtual bool Disconnect()
         {
             if (!IsConnected)
+            {
                 return false;
+            }
 
             // Reset event args
             _receiveEventArg.Completed -= OnAsyncCompleted;
@@ -243,10 +249,14 @@ namespace NetCoreServer
         public virtual long Send(ReadOnlySpan<byte> buffer)
         {
             if (!IsConnected)
+            {
                 return 0;
+            }
 
             if (buffer.IsEmpty)
+            {
                 return 0;
+            }
 
             // Sent data to the client
             long sent = Socket.Send(buffer, SocketFlags.None, out SocketError ec);
@@ -301,10 +311,14 @@ namespace NetCoreServer
         public virtual bool SendAsync(ReadOnlySpan<byte> buffer)
         {
             if (!IsConnected)
+            {
                 return false;
+            }
 
             if (buffer.IsEmpty)
+            {
                 return true;
+            }
 
             lock (_sendLock)
             {
@@ -323,9 +337,13 @@ namespace NetCoreServer
 
                 // Avoid multiple send handlers
                 if (_sending)
+                {
                     return true;
+                }
                 else
-                    _sending = true;
+                {
+                    this._sending = true;
+                }
 
                 // Try to send the main buffer
                 TrySend();
@@ -365,10 +383,14 @@ namespace NetCoreServer
         public virtual long Receive(byte[] buffer, long offset, long size)
         {
             if (!IsConnected)
+            {
                 return 0;
+            }
 
             if (size == 0)
+            {
                 return 0;
+            }
 
             // Receive data from the client
             long received = Socket.Receive(buffer, (int)offset, (int)size, SocketFlags.None, out SocketError ec);
@@ -419,10 +441,14 @@ namespace NetCoreServer
         private void TryReceive()
         {
             if (_receiving)
+            {
                 return;
+            }
 
             if (!IsConnected)
+            {
                 return;
+            }
 
             bool process = true;
 
@@ -436,7 +462,9 @@ namespace NetCoreServer
                     _receiving = true;
                     _receiveEventArg.SetBuffer(_receiveBuffer.Data, 0, (int)_receiveBuffer.Capacity);
                     if (!Socket.ReceiveAsync(_receiveEventArg))
-                        process = ProcessReceive(_receiveEventArg);
+                    {
+                        process = this.ProcessReceive(this._receiveEventArg);
+                    }
                 }
                 catch (ObjectDisposedException) {}
             }
@@ -448,7 +476,9 @@ namespace NetCoreServer
         private void TrySend()
         {
             if (!IsConnected)
+            {
                 return;
+            }
 
             bool empty = false;
             bool process = true;
@@ -481,7 +511,9 @@ namespace NetCoreServer
                         }
                     }
                     else
+                    {
                         return;
+                    }
                 }
 
                 // Call the empty send buffer handler
@@ -496,7 +528,9 @@ namespace NetCoreServer
                     // Async write with the write handler
                     _sendEventArg.SetBuffer(_sendBufferFlush.Data, (int)_sendBufferFlushOffset, (int)(_sendBufferFlush.Size - _sendBufferFlushOffset));
                     if (!Socket.SendAsync(_sendEventArg))
-                        process = ProcessSend(_sendEventArg);
+                    {
+                        process = this.ProcessSend(this._sendEventArg);
+                    }
                 }
                 catch (ObjectDisposedException) {}
             }
@@ -530,18 +564,26 @@ namespace NetCoreServer
         private void OnAsyncCompleted(object sender, SocketAsyncEventArgs e)
         {
             if (IsSocketDisposed)
+            {
                 return;
+            }
 
             // Determine which type of operation just completed and call the associated handler
             switch (e.LastOperation)
             {
                 case SocketAsyncOperation.Receive:
                     if (ProcessReceive(e))
-                        TryReceive();
+                    {
+                        this.TryReceive();
+                    }
+
                     break;
                 case SocketAsyncOperation.Send:
                     if (ProcessSend(e))
-                        TrySend();
+                    {
+                        this.TrySend();
+                    }
+
                     break;
                 default:
                     throw new ArgumentException("The last operation completed on the socket was not a receive or send");
@@ -555,7 +597,9 @@ namespace NetCoreServer
         private bool ProcessReceive(SocketAsyncEventArgs e)
         {
             if (!IsConnected)
+            {
                 return false;
+            }
 
             long size = e.BytesTransferred;
 
@@ -591,9 +635,13 @@ namespace NetCoreServer
             {
                 // If zero is returned from a read operation, the remote end has closed the connection
                 if (size > 0)
+                {
                     return true;
+                }
                 else
-                    Disconnect();
+                {
+                    this.Disconnect();
+                }
             }
             else
             {
@@ -610,7 +658,9 @@ namespace NetCoreServer
         private bool ProcessSend(SocketAsyncEventArgs e)
         {
             if (!IsConnected)
+            {
                 return false;
+            }
 
             long size = e.BytesTransferred;
 
@@ -639,7 +689,9 @@ namespace NetCoreServer
 
             // Try to send again if the session is valid
             if (e.SocketError == SocketError.Success)
+            {
                 return true;
+            }
             else
             {
                 SendError(e.SocketError);
@@ -721,7 +773,9 @@ namespace NetCoreServer
                 (error == SocketError.ConnectionReset) ||
                 (error == SocketError.OperationAborted) ||
                 (error == SocketError.Shutdown))
+            {
                 return;
+            }
 
             OnError(error);
         }
