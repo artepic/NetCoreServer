@@ -46,7 +46,7 @@ namespace tests
 
         public EchoTcpServer(IPAddress address, int port) : base(address, port) {}
 
-        protected override TcpSession CreateSession() { return new EchoTcpSession(this); }
+        protected override TcpSession CreateSession() => new EchoTcpSession(this);
 
         protected override void OnStarted() { Started = true; }
         protected override void OnStopped() { Stopped = true; }

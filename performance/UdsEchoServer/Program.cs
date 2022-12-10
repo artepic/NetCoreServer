@@ -26,7 +26,7 @@ namespace UdsEchoServer
     {
         public EchoServer(string path) : base(path) {}
 
-        protected override UdsSession CreateSession() { return new EchoSession(this); }
+        protected override UdsSession CreateSession() => new EchoSession(this);
 
         protected override void OnError(SocketError error)
         {

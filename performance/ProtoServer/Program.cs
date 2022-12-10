@@ -15,10 +15,7 @@ namespace ProtoServer
 
         public ProtoSessionSender(ProtoSession session) { Session = session; }
 
-        public long OnSend(byte[] buffer, long offset, long size)
-        {
-            return Session.SendAsync(buffer, offset, size) ? size : 0;
-        }
+        public long OnSend(byte[] buffer, long offset, long size) => Session.SendAsync(buffer, offset, size) ? size : 0;
     }
 
     class ProtoSessionReceiver : Receiver, IReceiverListener
@@ -85,7 +82,7 @@ namespace ProtoServer
             Sender = new ProtoSender(this);
         }
 
-        protected override TcpSession CreateSession() { return new ProtoSession(this); }
+        protected override TcpSession CreateSession() => new ProtoSession(this);
 
         protected override void OnError(SocketError error)
         {

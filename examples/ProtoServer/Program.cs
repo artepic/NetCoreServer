@@ -14,10 +14,7 @@ namespace ProtoServer
 
         public SimpleProtoSessionSender(SimpleProtoSession session) { Session = session; }
 
-        public long OnSend(byte[] buffer, long offset, long size)
-        {
-            return Session.SendAsync(buffer, offset, size) ? size : 0;
-        }
+        public long OnSend(byte[] buffer, long offset, long size) => Session.SendAsync(buffer, offset, size) ? size : 0;
     }
 
     public class SimpleProtoSessionReceiver : Receiver, IReceiverListener
@@ -114,7 +111,7 @@ namespace ProtoServer
             Sender = new SimpleProtoSender(this);
         }
 
-        protected override TcpSession CreateSession() { return new SimpleProtoSession(this); }
+        protected override TcpSession CreateSession() => new SimpleProtoSession(this);
 
         protected override void OnStarted()
         {

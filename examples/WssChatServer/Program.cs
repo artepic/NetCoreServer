@@ -51,7 +51,7 @@ namespace WssChatServer
     {
         public ChatServer(SslContext context, IPAddress address, int port) : base(context, address, port) {}
 
-        protected override SslSession CreateSession() { return new ChatSession(this); }
+        protected override SslSession CreateSession() => new ChatSession(this);
 
         protected override void OnError(SocketError error)
         {

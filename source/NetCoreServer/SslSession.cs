@@ -431,7 +431,7 @@ namespace NetCoreServer
         /// </summary>
         /// <param name="buffer">Buffer to receive</param>
         /// <returns>Size of received data</returns>
-        public virtual long Receive(byte[] buffer) { return Receive(buffer, 0, buffer.Length); }
+        public virtual long Receive(byte[] buffer) => Receive(buffer, 0, buffer.Length);
 
         /// <summary>
         /// Receive data from the client (synchronous)

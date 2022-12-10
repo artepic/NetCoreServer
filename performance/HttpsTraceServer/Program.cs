@@ -40,7 +40,7 @@ namespace HttpsTraceServer
     {
         public HttpsTraceServer(SslContext context, IPAddress address, int port) : base(context, address, port) {}
 
-        protected override SslSession CreateSession() { return new HttpsTraceSession(this); }
+        protected override SslSession CreateSession() => new HttpsTraceSession(this);
 
         protected override void OnError(SocketError error)
         {

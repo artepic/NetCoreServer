@@ -80,9 +80,9 @@ namespace tests
             _tcpProtoClient.Dispose();
         }
 
-        public bool ConnectAsync() { return _tcpProtoClient.ConnectAsync(); }
-        public bool DisconnectAsync() { return _tcpProtoClient.DisconnectAsync(); }
-        public bool ReconnectAsync() { return _tcpProtoClient.ReconnectAsync(); }
+        public bool ConnectAsync() => _tcpProtoClient.ConnectAsync();
+        public bool DisconnectAsync() => _tcpProtoClient.DisconnectAsync();
+        public bool ReconnectAsync() => _tcpProtoClient.ReconnectAsync();
 
         #region Connection handlers
 
@@ -105,10 +105,7 @@ namespace tests
             Disconnected?.Invoke();
         }
 
-        public long OnSend(byte[] buffer, long offset, long size)
-        {
-            return _tcpProtoClient.SendAsync(buffer, offset, size) ? size : 0;
-        }
+        public long OnSend(byte[] buffer, long offset, long size) => _tcpProtoClient.SendAsync(buffer, offset, size) ? size : 0;
 
         public void OnReceived(byte[] buffer, long offset, long size)
         {
@@ -178,10 +175,7 @@ namespace tests
 
         public ProtoSessionSender(ProtoSession session) { Session = session; }
 
-        public long OnSend(byte[] buffer, long offset, long size)
-        {
-            return Session.SendAsync(buffer, offset, size) ? size : 0;
-        }
+        public long OnSend(byte[] buffer, long offset, long size) => Session.SendAsync(buffer, offset, size) ? size : 0;
     }
 
     class ProtoSessionReceiver : Receiver, IReceiverListener
@@ -250,7 +244,7 @@ namespace tests
             Sender = new ProtoSender(this);
         }
 
-        protected override TcpSession CreateSession() { return new ProtoSession(this); }
+        protected override TcpSession CreateSession() => new ProtoSession(this);
 
         protected override void OnStarted() { Started = true; }
         protected override void OnStopped() { Stopped = true; }

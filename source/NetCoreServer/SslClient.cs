@@ -190,10 +190,7 @@ namespace NetCoreServer
         /// Method may be override if you need to prepare some specific socket object in your implementation.
         /// </remarks>
         /// <returns>Socket object</returns>
-        protected virtual Socket CreateSocket()
-        {
-            return new Socket(Endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-        }
+        protected virtual Socket CreateSocket() => new Socket(Endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
         /// <summary>
         /// Connect the client (synchronous)
@@ -701,7 +698,7 @@ namespace NetCoreServer
         /// </summary>
         /// <param name="buffer">Buffer to receive</param>
         /// <returns>Size of received data</returns>
-        public virtual long Receive(byte[] buffer) { return Receive(buffer, 0, buffer.Length); }
+        public virtual long Receive(byte[] buffer) => Receive(buffer, 0, buffer.Length);
 
         /// <summary>
         /// Receive data from the server (synchronous)

@@ -57,18 +57,12 @@ namespace NetCoreServer
         /// <summary>
         /// Get a span of bytes from the current buffer
         /// </summary>
-        public Span<byte> AsSpan()
-        {
-            return new Span<byte>(_data, (int)_offset, (int)_size);
-        }
+        public Span<byte> AsSpan() => new Span<byte>(_data, (int)_offset, (int)_size);
 
         /// <summary>
         /// Get a string from the current buffer
         /// </summary>
-        public override string ToString()
-        {
-            return ExtractString(0, _size);
-        }
+        public override string ToString() => ExtractString(0, _size);
 
         // Clear the current buffer and its offset
         public void Clear()

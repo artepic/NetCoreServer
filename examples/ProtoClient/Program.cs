@@ -29,10 +29,7 @@ namespace ProtoClient
             return true;
         }
 
-        public override bool Reconnect()
-        {
-            return ReconnectAsync();
-        }
+        public override bool Reconnect() => ReconnectAsync();
 
         private Timer _reconnectTimer;
 
@@ -154,9 +151,9 @@ namespace ProtoClient
             _tcpProtoClient.Dispose();
         }
 
-        public bool ConnectAndStart() { return _tcpProtoClient.ConnectAndStart(); }
-        public bool DisconnectAndStop() { return _tcpProtoClient.DisconnectAndStop(); }
-        public bool Reconnect() { return _tcpProtoClient.Reconnect(); }
+        public bool ConnectAndStart() => _tcpProtoClient.ConnectAndStart();
+        public bool DisconnectAndStop() => _tcpProtoClient.DisconnectAndStop();
+        public bool Reconnect() => _tcpProtoClient.Reconnect();
 
         private bool _watchdog;
         private Thread _watchdogThread;
@@ -246,10 +243,7 @@ namespace ProtoClient
             Disconnected?.Invoke();
         }
 
-        public long OnSend(byte[] buffer, long offset, long size)
-        {
-            return _tcpProtoClient.SendAsync(buffer, offset, size) ? size : 0;
-        }
+        public long OnSend(byte[] buffer, long offset, long size) => _tcpProtoClient.SendAsync(buffer, offset, size) ? size : 0;
 
         public void OnReceived(byte[] buffer, long offset, long size)
         {

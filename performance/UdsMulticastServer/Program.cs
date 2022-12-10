@@ -40,7 +40,7 @@ namespace UdsMulticastServer
     {
         public MulticastServer(string path) : base(path) {}
 
-        protected override UdsSession CreateSession() { return new MulticastSession(this); }
+        protected override UdsSession CreateSession() => new MulticastSession(this);
 
         protected override void OnError(SocketError error)
         {

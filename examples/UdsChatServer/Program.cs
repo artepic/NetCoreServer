@@ -49,7 +49,7 @@ namespace UdsChatServer
     {
         public ChatServer(string path) : base(path) {}
 
-        protected override UdsSession CreateSession() { return new ChatSession(this); }
+        protected override UdsSession CreateSession() => new ChatSession(this);
 
         protected override void OnError(SocketError error)
         {

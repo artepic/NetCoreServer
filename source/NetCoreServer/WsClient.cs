@@ -395,7 +395,7 @@ namespace NetCoreServer
 
         public virtual void OnWsConnecting(HttpRequest request) {}
         public virtual void OnWsConnected(HttpResponse response) {}
-        public virtual bool OnWsConnecting(HttpRequest request, HttpResponse response) { return true; }
+        public virtual bool OnWsConnecting(HttpRequest request, HttpResponse response) => true;
         public virtual void OnWsConnected(HttpRequest request) {}
         public virtual void OnWsDisconnecting() {}
         public virtual void OnWsDisconnected() {}

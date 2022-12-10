@@ -115,7 +115,8 @@ namespace NetCoreServer
         /// <summary>
         /// Is the HTTP response empty?
         /// </summary>
-        public bool IsEmpty { get { return (_cache.Size > 0); } }
+        public bool IsEmpty => (_cache.Size > 0);
+
         /// <summary>
         /// Is the HTTP response error flag set?
         /// </summary>
@@ -129,15 +130,18 @@ namespace NetCoreServer
         /// <summary>
         /// Get the HTTP response status phrase
         /// </summary>
-        public string StatusPhrase { get { return _statusPhrase; } }
+        public string StatusPhrase => _statusPhrase;
+
         /// <summary>
         /// Get the HTTP response protocol version
         /// </summary>
-        public string Protocol { get { return _protocol; } }
+        public string Protocol => _protocol;
+
         /// <summary>
         /// Get the HTTP response headers count
         /// </summary>
-        public long Headers { get { return _headers.Count; } }
+        public long Headers => _headers.Count;
+
         /// <summary>
         /// Get the HTTP response header by index
         /// </summary>
@@ -154,24 +158,27 @@ namespace NetCoreServer
         /// <summary>
         /// Get the HTTP response body as string
         /// </summary>
-        public string Body { get { return _cache.ExtractString(_bodyIndex, _bodySize); } }
+        public string Body => _cache.ExtractString(_bodyIndex, _bodySize);
+
         /// <summary>
         /// Get the HTTP request body as byte array
         /// </summary>
-        public byte[] BodyBytes { get { return _cache.Data[_bodyIndex..(_bodyIndex + _bodySize)]; } }
+        public byte[] BodyBytes => _cache.Data[_bodyIndex..(_bodyIndex + _bodySize)];
+
         /// <summary>
         /// Get the HTTP request body as read-only byte span
         /// </summary>
-        public ReadOnlySpan<byte> BodySpan { get { return new ReadOnlySpan<byte>(_cache.Data, _bodyIndex, _bodySize); } }
+        public ReadOnlySpan<byte> BodySpan => new ReadOnlySpan<byte>(_cache.Data, _bodyIndex, _bodySize);
+
         /// <summary>
         /// Get the HTTP response body length
         /// </summary>
-        public long BodyLength { get { return _bodyLength; } }
+        public long BodyLength => _bodyLength;
 
         /// <summary>
         /// Get the HTTP response cache content
         /// </summary>
-        public Buffer Cache { get { return _cache; } }
+        public Buffer Cache => _cache;
 
         /// <summary>
         /// Get string from the current HTTP response
@@ -532,10 +539,7 @@ namespace NetCoreServer
         /// </summary>
         /// <param name="content">Error content (default is "")</param>
         /// <param name="contentType">Error content type (default is "text/plain; charset=UTF-8")</param>
-        public HttpResponse MakeErrorResponse(string content = "", string contentType = "text/plain; charset=UTF-8")
-        {
-            return MakeErrorResponse(500, content, contentType);
-        }
+        public HttpResponse MakeErrorResponse(string content = "", string contentType = "text/plain; charset=UTF-8") => MakeErrorResponse(500, content, contentType);
 
         /// <summary>
         /// Make ERROR response
@@ -694,14 +698,9 @@ namespace NetCoreServer
         private static readonly Dictionary<string, string> _mimeTable;
 
         // Is pending parts of HTTP response
-        internal bool IsPendingHeader()
-        {
-            return (!IsErrorSet && (_bodyIndex == 0));
-        }
-        internal bool IsPendingBody()
-        {
-            return (!IsErrorSet && (_bodyIndex > 0) && (_bodySize > 0));
-        }
+        internal bool IsPendingHeader() => (!IsErrorSet && (_bodyIndex == 0));
+
+        internal bool IsPendingBody() => (!IsErrorSet && (_bodyIndex > 0) && (_bodySize > 0));
 
         // Receive parts of HTTP response
         internal bool ReceiveHeader(byte[] buffer, int offset, int size)

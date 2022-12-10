@@ -75,7 +75,7 @@ namespace NetCoreServer
         /// </summary>
         public void ClearStaticContent() { Cache.Clear(); }
 
-        protected override SslSession CreateSession() { return new HttpsSession(this); }
+        protected override SslSession CreateSession() => new HttpsSession(this);
 
         #region IDisposable implementation
 

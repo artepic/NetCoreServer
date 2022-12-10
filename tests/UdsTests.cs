@@ -46,7 +46,7 @@ namespace tests
 
         public EchoUdsServer(string path) : base(path) {}
 
-        protected override UdsSession CreateSession() { return new EchoUdsSession(this); }
+        protected override UdsSession CreateSession() => new EchoUdsSession(this);
 
         protected override void OnStarted() { Started = true; }
         protected override void OnStopped() { Stopped = true; }

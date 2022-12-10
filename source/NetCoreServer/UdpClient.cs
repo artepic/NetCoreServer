@@ -151,10 +151,7 @@ namespace NetCoreServer
         /// Method may be override if you need to prepare some specific socket object in your implementation.
         /// </remarks>
         /// <returns>Socket object</returns>
-        protected virtual Socket CreateSocket()
-        {
-            return new Socket(Endpoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-        }
+        protected virtual Socket CreateSocket() => new Socket(Endpoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
 
         /// <summary>
         /// Connect the client (synchronous)
@@ -639,7 +636,7 @@ namespace NetCoreServer
         /// <param name="endpoint">Endpoint to receive from</param>
         /// <param name="buffer">Datagram buffer to receive</param>
         /// <returns>Size of received datagram</returns>
-        public virtual long Receive(ref EndPoint endpoint, byte[] buffer) { return Receive(ref endpoint, buffer, 0, buffer.Length); }
+        public virtual long Receive(ref EndPoint endpoint, byte[] buffer) => Receive(ref endpoint, buffer, 0, buffer.Length);
 
         /// <summary>
         /// Receive a new datagram from the given endpoint (synchronous)

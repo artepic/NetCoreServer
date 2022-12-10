@@ -110,7 +110,7 @@ namespace tests
     {
         public HttpsCacheServer(SslContext context, IPAddress address, int port) : base(context, address, port) {}
 
-        protected override SslSession CreateSession() { return new HttpsCacheSession(this); }
+        protected override SslSession CreateSession() => new HttpsCacheSession(this);
 
         protected override void OnError(SocketError error)
         {

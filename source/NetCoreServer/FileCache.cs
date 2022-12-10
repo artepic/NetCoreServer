@@ -138,10 +138,7 @@ namespace NetCoreServer
         /// </summary>
         /// <param name="path">Path to remove</param>
         /// <returns>'true' if the cache path was removed, 'false' if the given path was not found</returns>
-        public bool RemovePath(string path)
-        {
-            return RemovePathInternal(path);
-        }
+        public bool RemovePath(string path) => RemovePathInternal(path);
 
         /// <summary>
         /// Clear the memory cache

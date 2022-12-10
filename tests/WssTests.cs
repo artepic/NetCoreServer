@@ -75,7 +75,7 @@ namespace tests
             return new SslContext(SslProtocols.Tls13, new X509Certificate2("server.pfx", "qwerty"), (sender, certificate, chain, sslPolicyErrors) => true);
         }
 
-        protected override SslSession CreateSession() { return new EchoWssSession(this); }
+        protected override SslSession CreateSession() => new EchoWssSession(this);
 
         protected override void OnStarted() { Started = true; }
         protected override void OnStopped() { Stopped = true; }

@@ -58,12 +58,9 @@ namespace tests
 
         public EchoSslServer(SslContext context, IPAddress address, int port) : base(context, address, port) {}
 
-        public static SslContext CreateContext()
-        {
-            return new SslContext(SslProtocols.Tls13, new X509Certificate2("server.pfx", "qwerty"));
-        }
+        public static SslContext CreateContext() => new SslContext(SslProtocols.Tls13, new X509Certificate2("server.pfx", "qwerty"));
 
-        protected override SslSession CreateSession() { return new EchoSslSession(this); }
+        protected override SslSession CreateSession() => new EchoSslSession(this);
 
         protected override void OnStarted() { Started = true; }
         protected override void OnStopped() { Stopped = true; }

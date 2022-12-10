@@ -28,7 +28,7 @@ namespace WssEchoServer
     {
         public EchoServer(SslContext context, IPAddress address, int port) : base(context, address, port) {}
 
-        protected override SslSession CreateSession() { return new EchoSession(this); }
+        protected override SslSession CreateSession() => new EchoSession(this);
 
         protected override void OnError(SocketError error)
         {

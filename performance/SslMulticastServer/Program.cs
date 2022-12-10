@@ -42,7 +42,7 @@ namespace SslMulticastServer
     {
         public MulticastServer(SslContext context, IPAddress address, int port) : base(context, address, port) {}
 
-        protected override SslSession CreateSession() { return new MulticastSession(this); }
+        protected override SslSession CreateSession() => new MulticastSession(this);
 
         protected override void OnError(SocketError error)
         {

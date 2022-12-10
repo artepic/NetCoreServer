@@ -38,7 +38,7 @@ namespace HttpTraceServer
     {
         public HttpTraceServer(IPAddress address, int port) : base(address, port) {}
 
-        protected override TcpSession CreateSession() { return new HttpTraceSession(this); }
+        protected override TcpSession CreateSession() => new HttpTraceSession(this);
 
         protected override void OnError(SocketError error)
         {

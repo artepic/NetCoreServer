@@ -32,7 +32,8 @@ namespace NetCoreServer
         /// <summary>
         /// Is the HTTP request empty?
         /// </summary>
-        public bool IsEmpty { get { return (_cache.Size == 0); } }
+        public bool IsEmpty => (_cache.Size == 0);
+
         /// <summary>
         /// Is the HTTP request error flag set?
         /// </summary>
@@ -41,19 +42,23 @@ namespace NetCoreServer
         /// <summary>
         /// Get the HTTP request method
         /// </summary>
-        public string Method { get { return _method; } }
+        public string Method => _method;
+
         /// <summary>
         /// Get the HTTP request URL
         /// </summary>
-        public string Url { get { return _url; } }
+        public string Url => _url;
+
         /// <summary>
         /// Get the HTTP request protocol version
         /// </summary>
-        public string Protocol { get { return _protocol; } }
+        public string Protocol => _protocol;
+
         /// <summary>
         /// Get the HTTP request headers count
         /// </summary>
-        public long Headers { get { return _headers.Count; } }
+        public long Headers => _headers.Count;
+
         /// <summary>
         /// Get the HTTP request header by index
         /// </summary>
@@ -70,7 +75,8 @@ namespace NetCoreServer
         /// <summary>
         /// Get the HTTP request cookies count
         /// </summary>
-        public long Cookies { get { return _cookies.Count; } }
+        public long Cookies => _cookies.Count;
+
         /// <summary>
         /// Get the HTTP request cookie by index
         /// </summary>
@@ -87,24 +93,27 @@ namespace NetCoreServer
         /// <summary>
         /// Get the HTTP request body as string
         /// </summary>
-        public string Body { get { return _cache.ExtractString(_bodyIndex, _bodySize); } }
+        public string Body => _cache.ExtractString(_bodyIndex, _bodySize);
+
         /// <summary>
         /// Get the HTTP request body as byte array
         /// </summary>
-        public byte[] BodyBytes { get { return _cache.Data[_bodyIndex..(_bodyIndex + _bodySize)]; } }
+        public byte[] BodyBytes => _cache.Data[_bodyIndex..(_bodyIndex + _bodySize)];
+
         /// <summary>
         /// Get the HTTP request body as byte span
         /// </summary>
-        public Span<byte> BodySpan { get { return new Span<byte>(_cache.Data, _bodyIndex, _bodySize); } }
+        public Span<byte> BodySpan => new Span<byte>(_cache.Data, _bodyIndex, _bodySize);
+
         /// <summary>
         /// Get the HTTP request body length
         /// </summary>
-        public long BodyLength { get { return _bodyLength; } }
+        public long BodyLength => _bodyLength;
 
         /// <summary>
         /// Get the HTTP request cache content
         /// </summary>
-        public Buffer Cache { get { return _cache; } }
+        public Buffer Cache => _cache;
 
         /// <summary>
         /// Get string from the current HTTP request
@@ -513,14 +522,9 @@ namespace NetCoreServer
         private int _cacheSize;
 
         // Is pending parts of HTTP request
-        internal bool IsPendingHeader()
-        {
-            return (!IsErrorSet && (_bodyIndex == 0));
-        }
-        internal bool IsPendingBody()
-        {
-            return (!IsErrorSet && (_bodyIndex > 0) && (_bodySize > 0));
-        }
+        internal bool IsPendingHeader() => (!IsErrorSet && (_bodyIndex == 0));
+
+        internal bool IsPendingBody() => (!IsErrorSet && (_bodyIndex > 0) && (_bodySize > 0));
 
         internal bool ReceiveHeader(byte[] buffer, int offset, int size)
         {

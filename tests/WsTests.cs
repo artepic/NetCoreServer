@@ -63,7 +63,7 @@ namespace tests
 
         public EchoWsServer(IPAddress address, int port) : base(address, port) {}
 
-        protected override TcpSession CreateSession() { return new EchoWsSession(this); }
+        protected override TcpSession CreateSession() => new EchoWsSession(this);
 
         protected override void OnStarted() { Started = true; }
         protected override void OnStopped() { Stopped = true; }

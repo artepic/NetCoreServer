@@ -80,9 +80,9 @@ namespace ProtoClient
             _tcpProtoClient.Dispose();
         }
 
-        public bool ConnectAsync() { return _tcpProtoClient.ConnectAsync(); }
-        public bool DisconnectAsync() { return _tcpProtoClient.DisconnectAsync(); }
-        public bool ReconnectAsync() { return _tcpProtoClient.ReconnectAsync(); }
+        public bool ConnectAsync() => _tcpProtoClient.ConnectAsync();
+        public bool DisconnectAsync() => _tcpProtoClient.DisconnectAsync();
+        public bool ReconnectAsync() => _tcpProtoClient.ReconnectAsync();
 
         private void SendMessage()
         {
@@ -117,10 +117,7 @@ namespace ProtoClient
             Disconnected?.Invoke();
         }
 
-        public long OnSend(byte[] buffer, long offset, long size)
-        {
-            return _tcpProtoClient.SendAsync(buffer, offset, size) ? size : 0;
-        }
+        public long OnSend(byte[] buffer, long offset, long size) => _tcpProtoClient.SendAsync(buffer, offset, size) ? size : 0;
 
         public void OnReceived(byte[] buffer, long offset, long size)
         {

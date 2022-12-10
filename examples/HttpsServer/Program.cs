@@ -36,20 +36,14 @@ namespace HttpsServer
             return result.ToString();
         }
 
-        public bool GetCacheValue(string key, out string value)
-        {
-            return _cache.TryGetValue(key, out value);
-        }
+        public bool GetCacheValue(string key, out string value) => _cache.TryGetValue(key, out value);
 
         public void PutCacheValue(string key, string value)
         {
             _cache[key] = value;
         }
 
-        public bool DeleteCacheValue(string key, out string value)
-        {
-            return _cache.TryRemove(key, out value);
-        }
+        public bool DeleteCacheValue(string key, out string value) => _cache.TryRemove(key, out value);
 
         private readonly ConcurrentDictionary<string, string> _cache = new ConcurrentDictionary<string, string>();
         private static CommonCache _instance;
@@ -159,7 +153,7 @@ namespace HttpsServer
     {
         public HttpsCacheServer(SslContext context, IPAddress address, int port) : base(context, address, port) {}
 
-        protected override SslSession CreateSession() { return new HttpsCacheSession(this); }
+        protected override SslSession CreateSession() => new HttpsCacheSession(this);
 
         protected override void OnError(SocketError error)
         {

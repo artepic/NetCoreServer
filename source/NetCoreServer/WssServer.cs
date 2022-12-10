@@ -140,6 +140,6 @@ namespace NetCoreServer
 
         #endregion
 
-        protected override SslSession CreateSession() { return new WssSession(this); }
+        protected override SslSession CreateSession() => new WssSession(this);
     }
 }

@@ -71,19 +71,22 @@ namespace NetCoreServer
         /// <summary>
         /// Number of sessions connected to the server
         /// </summary>
-        public long ConnectedSessions { get { return Sessions.Count; } }
+        public long ConnectedSessions => Sessions.Count;
+
         /// <summary>
         /// Number of bytes pending sent by the server
         /// </summary>
-        public long BytesPending { get { return _bytesPending; } }
+        public long BytesPending => _bytesPending;
+
         /// <summary>
         /// Number of bytes sent by the server
         /// </summary>
-        public long BytesSent { get { return _bytesSent; } }
+        public long BytesSent => _bytesSent;
+
         /// <summary>
         /// Number of bytes received by the server
         /// </summary>
-        public long BytesReceived { get { return _bytesReceived; } }
+        public long BytesReceived => _bytesReceived;
 
         /// <summary>
         /// Option: acceptor backlog size
@@ -185,10 +188,7 @@ namespace NetCoreServer
         /// Method may be override if you need to prepare some specific socket object in your implementation.
         /// </remarks>
         /// <returns>Socket object</returns>
-        protected virtual Socket CreateSocket()
-        {
-            return new Socket(Endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-        }
+        protected virtual Socket CreateSocket() => new Socket(Endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
         /// <summary>
         /// Start the server
@@ -388,7 +388,7 @@ namespace NetCoreServer
         /// Create TCP session factory method
         /// </summary>
         /// <returns>TCP session</returns>
-        protected virtual TcpSession CreateSession() { return new TcpSession(this); }
+        protected virtual TcpSession CreateSession() => new TcpSession(this);
 
         #endregion
 
@@ -422,11 +422,10 @@ namespace NetCoreServer
         /// </summary>
         /// <param name="id">Session Id</param>
         /// <returns>Session with a given Id or null if the session it not connected</returns>
-        public TcpSession FindSession(Guid id)
-        {
+        public TcpSession FindSession(Guid id) =>
+
             // Try to find the required session
-            return Sessions.TryGetValue(id, out TcpSession result) ? result : null;
-        }
+            Sessions.TryGetValue(id, out TcpSession result) ? result : null;
 
         /// <summary>
         /// Register a new session

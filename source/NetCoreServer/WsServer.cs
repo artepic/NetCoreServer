@@ -137,6 +137,6 @@ namespace NetCoreServer
 
         #endregion
 
-        protected override TcpSession CreateSession() { return new WsSession(this); }
+        protected override TcpSession CreateSession() => new WsSession(this);
     }
 }
